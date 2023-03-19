@@ -141,9 +141,9 @@ public class UserService {
     }
 
     private void validateAlreadyExists(RegistrationForm dto, Long id) {
-        Optional<UserEntity> model = userRepository.findByEmail(dto.getEmail());
+        Optional<UserEntity> entity = userRepository.findByEmail(dto.getEmail());
 
-        if (model.isPresent() && !model.get().getId().equals(id)) {
+        if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException(String.format("User with email = %s already exist", dto.getEmail()));
         }
     }

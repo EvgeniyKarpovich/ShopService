@@ -30,6 +30,9 @@ public class OrganizationEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY)
+    private List<ProductEntity> products = new ArrayList<>();
+
     @Column(name = "logo")
     private String logo;
 

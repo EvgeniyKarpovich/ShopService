@@ -20,6 +20,7 @@
 		<maven-compiler-plugin.version>3.10.0</maven-compiler-plugin.version>
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
 		<jjwt.version>0.9.1</jjwt.version>
+		<commons-io.version>2.11.0</commons-io.version>
 		<jaxb-api.version>2.3.0</jaxb-api.version>
 	</properties>
 
@@ -54,6 +55,11 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>

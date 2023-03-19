@@ -56,7 +56,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**", "/roles", "/users").permitAll()
                 .requestMatchers("/api/test/mod").hasRole("MODERATOR")
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
+                .anyRequest().permitAll();
 
         http.authenticationProvider(authenticationProvider());
 

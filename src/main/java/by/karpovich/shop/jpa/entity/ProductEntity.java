@@ -44,7 +44,7 @@ public class ProductEntity {
     @JoinColumn(name = "discount_id")
     private DiscountEntity discount;
 
-    @OneToMany(mappedBy="product")
+    @OneToMany(mappedBy = "product")
     private List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "keywords")

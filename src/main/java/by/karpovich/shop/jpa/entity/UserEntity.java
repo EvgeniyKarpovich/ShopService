@@ -30,6 +30,9 @@ public class UserEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusUser statusUser;
@@ -41,7 +44,7 @@ public class UserEntity {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roleEntities = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)

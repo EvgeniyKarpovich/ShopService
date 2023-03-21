@@ -62,5 +62,4 @@ public class NotificationMapper {
         return userRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
-
 }

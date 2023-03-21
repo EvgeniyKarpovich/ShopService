@@ -12,6 +12,7 @@ import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.UserRepository;
+import by.karpovich.shop.mapping.NotificationMapper;
 import by.karpovich.shop.mapping.UserMapper;
 import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.security.UserDetailsImpl;
@@ -40,6 +41,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserMapper userMapper;
+    private final NotificationMapper notificationMapper;
 
     private static final String ROLE_USER = "ROLE_USER";
 
@@ -92,6 +94,14 @@ public class UserService {
 
         log.info("method findById - the user found with id = {} ", entity.getId());
         return userMapper.mapUserFullDtoFromModel(entity);
+    }
+
+    public List<NotificationDto> findAllNotification(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new NotFoundModelException(String.format("User with id = %s not found", userId)));
+
+        return notificationMapper.mapListNotificationDtoFromListEntity(userEntity.getNotifications());
     }
 
     @Transactional

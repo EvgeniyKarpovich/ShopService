@@ -72,12 +72,14 @@ public class OrganizationService {
         log.info("method deleteById - organization with id = {} deleted", id);
     }
 
+    @Transactional
     public void addLogo(Long organizationId, MultipartFile file) {
         var entity = organizationRepository.findById(organizationId)
                 .orElseThrow(
                         () -> new NotFoundModelException("not found"));
 
         entity.setLogo(Utils.saveFile(file));
+        organizationRepository.save(entity);
     }
 
     private void validateAlreadyExists(OrganizationForSaveUpdateDto dto, Long id) {

@@ -1,7 +1,6 @@
 package by.karpovich.shop.service;
 
-import by.karpovich.shop.api.dto.notification.NotificationDto;
-import by.karpovich.shop.exception.IncorrectAmount;
+import by.karpovich.shop.exception.IncorrectAmountException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.NotificationEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
@@ -40,7 +39,7 @@ public class AdminService {
     @Transactional
     public void addBalance(Long userId, Double sum) {
         if (sum < 0) {
-            throw new IncorrectAmount("Sum must be more 0");
+            throw new IncorrectAmountException("Sum must be more 0");
         }
         if (userRepository.findById(userId).isPresent()) {
             userRepository.addBalance(userId, sum);
@@ -75,6 +74,7 @@ public class AdminService {
 
         List<NotificationEntity> notifications = userEntity.getNotifications();
         notifications.add(notificationEntity);
+        userEntity.setNotifications(notifications);
         userRepository.save(userEntity);
     }
 }

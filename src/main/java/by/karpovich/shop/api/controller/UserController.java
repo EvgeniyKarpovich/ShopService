@@ -1,10 +1,10 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
-import by.karpovich.shop.jpa.repository.UserRepository;
-import by.karpovich.shop.service.Logic;
+import by.karpovich.shop.jpa.entity.NotificationEntity;
 import by.karpovich.shop.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +20,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final Logic logic;
 
-    @PutMapping("/buy/{userId}/{productId}")
-    public void buy(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId) {
-        logic.buyProduct(userId, productId);
-    }
-
-    @PutMapping("/balance/{id}/{price}")
-    public void decrementBalance(@PathVariable("id") Long userId, @PathVariable("price") Double price) {
-        userRepository.decrementBalance(userId, price);
+    @GetMapping("/notifications/{userId}")
+    public List<NotificationDto> findAllNotification(@PathVariable("userId") Long userId) {
+        return userService.findAllNotification(userId);
     }
 
     @GetMapping("/{id}")

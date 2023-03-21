@@ -1,8 +1,6 @@
 package by.karpovich.shop.exception.handler;
 
-import by.karpovich.shop.exception.DuplicateException;
-import by.karpovich.shop.exception.IncorrectAmount;
-import by.karpovich.shop.exception.NotFoundModelException;
+import by.karpovich.shop.exception.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -43,8 +41,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IncorrectAmount.class)
-    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(IncorrectAmount e) {
+    @ExceptionHandler(IncorrectAmountException.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(IncorrectAmountException e) {
         ResponseBody exceptionResponse = new ResponseBody(
                 Collections.singletonList(e.getMessage()), HttpStatus.BAD_REQUEST, Instant.now());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
@@ -52,6 +50,27 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundModelException.class)
     public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(NotFoundModelException e) {
+        ResponseBody exceptionResponse = new ResponseBody(
+                Collections.singletonList(e.getMessage()), HttpStatus.NOT_FOUND, Instant.now());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotEnoughMoneyException.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(NotEnoughMoneyException e) {
+        ResponseBody exceptionResponse = new ResponseBody(
+                Collections.singletonList(e.getMessage()), HttpStatus.NOT_FOUND, Instant.now());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotInStockException.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(NotInStockException e) {
+        ResponseBody exceptionResponse = new ResponseBody(
+                Collections.singletonList(e.getMessage()), HttpStatus.NOT_FOUND, Instant.now());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotValidException.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(NotValidException e) {
         ResponseBody exceptionResponse = new ResponseBody(
                 Collections.singletonList(e.getMessage()), HttpStatus.NOT_FOUND, Instant.now());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);

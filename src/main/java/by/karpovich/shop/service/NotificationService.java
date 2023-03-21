@@ -36,7 +36,7 @@ public class NotificationService {
                 () -> new NotFoundModelException("Notification with ID = " + id + " not found"));
     }
 
-    public List<NotificationDto> findAllByUserId(Long userId) {
-        return notificationMapper.mapListNotificationDtoFromListEntity(notificationRepository.findAllByUserId(userId));
-    }
+//    public List<NotificationDto> findAllByUserId(Long userId) {
+//        return notificationMapper.mapListNotificationDtoFromListEntity(notificationRepository.findAllByUserId(userId));
+//    }
 }

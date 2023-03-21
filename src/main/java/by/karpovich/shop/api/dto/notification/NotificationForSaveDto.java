@@ -15,4 +15,5 @@ public class NotificationForSaveDto {
 
     private String message;
 
+    private Long userId;
 }

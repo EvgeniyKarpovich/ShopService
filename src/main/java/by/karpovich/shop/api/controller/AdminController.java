@@ -61,5 +61,4 @@ public class AdminController {
     public void sendNotification(@PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId) {
         adminService.sendNotification(userId, notificationId);
     }
-
 }

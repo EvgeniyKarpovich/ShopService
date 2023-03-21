@@ -13,8 +13,6 @@ public class NotificationDto {
 
     private String name;
 
-    private String recipient;
-
     private String from;
 
     private String message;

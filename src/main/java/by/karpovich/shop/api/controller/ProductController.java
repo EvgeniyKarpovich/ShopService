@@ -29,6 +29,11 @@ public class ProductController {
         return productService.findById(id);
     }
 
+    @PutMapping("/buy/{userId}/{productId}")
+    public void buy(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId) {
+        productService.buyProduct(userId, productId);
+    }
+
     @PutMapping("/discounts/{id}/{disId}")
     public void addDiscount(@PathVariable("id") Long productId, @PathVariable("disId") Long disId) {
         productService.addDiscount(productId, disId);

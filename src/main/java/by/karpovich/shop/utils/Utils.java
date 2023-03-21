@@ -18,8 +18,7 @@ import java.util.UUID;
 
 public class Utils {
 
-    @Value("${upload.path}")
-    private static String path;
+    public static final String UPLOAD_PATH = "D://image//poster";
 
     private static String dateFormat = "dd MMMM yyyy";
 
@@ -34,7 +33,7 @@ public class Utils {
 
     public static String saveFile(MultipartFile file) {
 
-        Path uploadPath = Paths.get(path);
+        Path uploadPath = Paths.get(UPLOAD_PATH);
 
         if (!Files.exists(uploadPath)) {
             try {
@@ -58,7 +57,7 @@ public class Utils {
     }
 
     public static byte[] getImageAsResponseEntity(String fileName) {
-        String dirPath = path + "//";
+        String dirPath = UPLOAD_PATH + "//";
         InputStream in = null;
         byte[] media = new byte[0];
         try {

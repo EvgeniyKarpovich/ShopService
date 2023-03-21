@@ -22,6 +22,7 @@ public class CharacteristicEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "weight", updatable = false)
     private int weight;
 
     @OneToOne(mappedBy = "characteristic")

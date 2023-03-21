@@ -44,5 +44,4 @@ public class CommentService {
         return userRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
-
 }

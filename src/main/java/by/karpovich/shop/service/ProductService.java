@@ -1,5 +1,6 @@
 package by.karpovich.shop.service;
 
+import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
@@ -13,6 +14,7 @@ import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.DiscountRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.UserRepository;
+import by.karpovich.shop.mapping.CommentMapper;
 import by.karpovich.shop.mapping.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final DiscountRepository discountRepository;
     private final UserRepository userRepository;
+    private final CommentMapper commentMapper;
 
     @Transactional
     public ProductDtoOut save(ProductDtoForSave dto) {
@@ -102,8 +105,12 @@ public class ProductService {
         return productMapper.mapListDtoForFindAllFromListEntity(entities);
     }
 
+    public List<CommentDtoOut> findAllProductCommentsById(Long id) {
+        return commentMapper.mapListDtoFromListEntity(findUserById(id).getComments());
+    }
+
     @Transactional
-    public void update(Long id,  ProductDtoForSave dto) {
+    public void update(Long id, ProductDtoForSave dto) {
         ProductEntity entity = productMapper.mapEntityFromDto(dto);
         entity.setId(id);
         productRepository.save(entity);

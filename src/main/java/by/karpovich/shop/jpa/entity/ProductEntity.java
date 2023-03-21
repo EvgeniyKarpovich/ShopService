@@ -47,14 +47,13 @@ public class ProductEntity {
     @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
     private List<UserEntity> users = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "keywords")
     private List<String> keywords = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "characteristic_id")
     private CharacteristicEntity characteristic;
 

@@ -1,5 +1,6 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
@@ -37,6 +38,11 @@ public class ProductController {
     @PutMapping("/discounts/{id}/{disId}")
     public void addDiscount(@PathVariable("id") Long productId, @PathVariable("disId") Long disId) {
         productService.addDiscount(productId, disId);
+    }
+
+    @GetMapping("/comments/{id}")
+    public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
+        return productService.findAllProductCommentsById(productId);
     }
 
     @GetMapping

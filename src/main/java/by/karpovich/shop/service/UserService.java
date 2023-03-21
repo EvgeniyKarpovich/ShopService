@@ -3,6 +3,7 @@ package by.karpovich.shop.service;
 import by.karpovich.shop.api.dto.authentification.JwtResponse;
 import by.karpovich.shop.api.dto.authentification.LoginForm;
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
+import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;

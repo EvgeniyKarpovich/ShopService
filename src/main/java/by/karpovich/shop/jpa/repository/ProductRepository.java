@@ -22,7 +22,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     void decrementQuantity(Long productId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
     @Query("UPDATE ProductEntity p " +
             " SET p.isValid = true " +
             " WHERE p.id = :productId")

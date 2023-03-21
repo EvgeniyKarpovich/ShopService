@@ -4,6 +4,7 @@ import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
 import by.karpovich.shop.exception.NotFoundModelException;
+import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
 import by.karpovich.shop.jpa.repository.DiscountRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
@@ -51,6 +52,20 @@ public class ProductService {
         return productMapper.mapListDtoForFindAllFromListEntity(entities);
     }
 
+    @Transactional
+    public void update(Long id,  ProductDtoForSave dto) {
+        ProductEntity entity = productMapper.mapEntityFromDto(dto);
+        entity.setId(id);
+        productRepository.save(entity);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        if (productRepository.findById(id).isPresent()) {
+            productRepository.deleteById(id);
+        }
+        throw new NotFoundModelException(String.format("Product with id = %s not found", id));
+    }
 
     public ProductDtoOut findById(Long id) {
         var entity = productRepository.findById(id).orElseThrow(

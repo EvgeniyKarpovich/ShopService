@@ -1,5 +1,6 @@
 package by.karpovich.shop.jpa.repository;
 
+import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,6 +18,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE UserEntity u " +
+            " SET u.statusUser = :status " +
+            " WHERE u.id = :userId")
+    void setStatus(Long userId, StatusUser status);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE UserEntity u " +
             " SET u.balance = u.balance - :productPrice " +
@@ -24,7 +31,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     void decrementBalance(Long userId, Double productPrice);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
     @Query("UPDATE UserEntity u" +
             " SET u.balance =  u.balance + :bonusBalance" +
             " WHERE u.id = :userId"

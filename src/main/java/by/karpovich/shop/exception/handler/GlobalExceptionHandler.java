@@ -1,6 +1,7 @@
 package by.karpovich.shop.exception.handler;
 
 import by.karpovich.shop.exception.DuplicateException;
+import by.karpovich.shop.exception.IncorrectAmount;
 import by.karpovich.shop.exception.NotFoundModelException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +38,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(DuplicateException e) {
+        ResponseBody exceptionResponse = new ResponseBody(
+                Collections.singletonList(e.getMessage()), HttpStatus.BAD_REQUEST, Instant.now());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IncorrectAmount.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(IncorrectAmount e) {
         ResponseBody exceptionResponse = new ResponseBody(
                 Collections.singletonList(e.getMessage()), HttpStatus.BAD_REQUEST, Instant.now());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);

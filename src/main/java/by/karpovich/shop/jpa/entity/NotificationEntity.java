@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.userdetails.User;
 
 import java.time.Instant;
 
@@ -14,9 +15,9 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "comments")
+@Table(name = "notifications")
 @EntityListeners(AuditingEntityListener.class)
-public class CommentEntity {
+public class NotificationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +26,12 @@ public class CommentEntity {
     @Column(name = "name")
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     @Column(name = "message")
     private String message;
-
-    @Column(name = "rating")
-    private int rating;
 
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)

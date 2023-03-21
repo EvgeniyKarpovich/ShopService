@@ -55,6 +55,9 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<NotificationEntity> notifications = new ArrayList<>();
+
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)
     private Instant dateOfCreation;

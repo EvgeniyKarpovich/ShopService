@@ -16,7 +16,6 @@ public interface OrganizationRepository extends JpaRepository<OrganizationEntity
     Optional<OrganizationEntity> findByName(String name);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
     @Query("UPDATE OrganizationEntity o " +
             " SET o.status = :status " +
             " WHERE o.id = :organizationId")

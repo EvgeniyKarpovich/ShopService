@@ -29,12 +29,11 @@ public class CharacteristicService {
     }
 
     public CharacteristicDto findById(Long id) {
-        var entity = characteristicRepository.findById(id);
-        var country = entity.orElseThrow(
+        var entity = characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("characteristic with id = %s not found", id)));
 
-        log.info("method findById - characteristic found with id = {} ", country.getId());
-        return characteristicMapper.mapDtoFromEntity(country);
+        log.info("method findById - characteristic found with id = {} ", entity.getId());
+        return characteristicMapper.mapDtoFromEntity(entity);
     }
 
     public List<CharacteristicDto> findAll() {

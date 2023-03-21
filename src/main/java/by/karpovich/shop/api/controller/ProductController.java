@@ -6,6 +6,7 @@ import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.service.ProductService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @PostMapping
-    public void save(@RequestBody ProductDtoForSave dto) {
+    public void save(@Positive @RequestBody ProductDtoForSave dto) {
         productService.save(dto);
     }
 

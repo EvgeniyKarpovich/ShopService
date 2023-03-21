@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DiscountDto {
+public class DiscountDtoOut {
 
     private String name;
 
     private int discountPercentage;
 
-    private Instant startDiscount;
+    private String startDiscount;
 
-    private Instant finishDiscount;
+    private String finishDiscount;
 }

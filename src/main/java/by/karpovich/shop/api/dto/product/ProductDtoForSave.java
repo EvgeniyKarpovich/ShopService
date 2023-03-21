@@ -18,7 +18,7 @@ public class ProductDtoForSave {
 
     private String description;
 
-    private Long organizationId;
+    private String organizationName;
 
     private Double price;
 

@@ -1,10 +1,14 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
+import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @PostMapping
     public void save(@RequestBody ProductDtoForSave dto) {
@@ -22,5 +27,20 @@ public class ProductController {
     public ProductDtoOut findById(@PathVariable("id") Long id) {
 
         return productService.findById(id);
+    }
+
+    @PutMapping("/discounts/{id}/{disId}")
+    public void addDiscount(@PathVariable("id") Long productId, @PathVariable("disId") Long disId) {
+        productService.addDiscount(productId, disId);
+    }
+
+    @GetMapping
+    public List<ProductDtoForFindAll> findAll() {
+        return productService.findAll();
+    }
+
+    @PutMapping("/{id}")
+    public void decQua(@PathVariable("id") Long productId) {
+        productRepository.decrementQuantity(productId);
     }
 }

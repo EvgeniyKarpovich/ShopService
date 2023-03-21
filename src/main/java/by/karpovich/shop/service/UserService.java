@@ -58,11 +58,11 @@ public class UserService {
 
     @Transactional
     public JwtResponse signIn(LoginForm loginForm) {
-        String email = loginForm.getUsername();
+        String username = loginForm.getUsername();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
 
-        UserEntity userByName = findByName(email);
+        UserEntity userByName = findByName(username);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -86,13 +86,11 @@ public class UserService {
     }
 
     public UserFullDtoOut findById(Long id) {
-        Optional<UserEntity> model = userRepository.findById(id);
-        var user = model.orElseThrow(
-                () -> new NotFoundModelException(String.format("User with id = %s not found", model.get().getId())));
+        var entity = userRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
 
-        log.info("method findById - the user found with id = {} ", user.getId());
-
-        return userMapper.mapUserFullDtoFromModel(user);
+        log.info("method findById - the user found with id = {} ", entity.getId());
+        return userMapper.mapUserFullDtoFromModel(entity);
     }
 
     @Transactional
@@ -107,7 +105,6 @@ public class UserService {
         List<UserEntity> usersModel = userRepository.findAll();
 
         log.info("method findAll - number of users found  = {} ", usersModel.size());
-
         return userMapper.mapListUserDtoForFindAllFromListModel(usersModel);
     }
 

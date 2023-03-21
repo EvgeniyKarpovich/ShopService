@@ -1,5 +1,6 @@
 package by.karpovich.shop.mapping;
 
+import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
 import by.karpovich.shop.exception.NotFoundModelException;
@@ -8,8 +9,13 @@ import by.karpovich.shop.jpa.entity.OrganizationEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.repository.CharacteristicRepository;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
+import ch.qos.logback.core.sift.AppenderFactoryUsingSiftModel;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.LifecycleState;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,17 +30,15 @@ public class ProductMapper {
             return null;
         }
 
-        var entity = new ProductEntity();
-
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setOrganization(findOrgByIdWhichWillReturnModel(dto.getOrganizationId()));
-        entity.setPrice(dto.getPrice());
-        entity.setQuantity(dto.getQuantity());
-        entity.setKeywords(dto.getKeywords());
-        entity.setCharacteristic(findCharacterByIdWhichWillReturnModel(dto.getCharacteristicId()));
-
-        return entity;
+        return ProductEntity.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .organization(findOrgByNameWhichWillReturnModel(dto.getOrganizationName()))
+                .price(dto.getPrice())
+                .quantity(dto.getQuantity())
+                .keywords(dto.getKeywords())
+                .characteristic(findCharacterByIdWhichWillReturnModel(dto.getCharacteristicId()))
+                .build();
     }
 
     public ProductDtoOut mapDtoOutFromEntity(ProductEntity entity) {
@@ -42,30 +46,44 @@ public class ProductMapper {
             return null;
         }
 
-        var dto = new ProductDtoOut();
-
-        dto.setName(entity.getName());
-        dto.setDescription(entity.getDescription());
-        dto.setOrganizationName(entity.getOrganization().getName());
-        dto.setPrice(entity.getPrice());
-        dto.setQuantity(entity.getQuantity());
-        dto.setKeywords(entity.getKeywords());
-        dto.setCharacteristic(characteristicMapper.mapDtoFromEntity(entity.getCharacteristic()));
-
-        return dto;
+        return ProductDtoOut.builder()
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .organizationName(entity.getOrganization().getName())
+                .price(entity.getPrice())
+                .quantity(entity.getQuantity())
+                .keywords(entity.getKeywords())
+                .characteristic(characteristicMapper.mapDtoFromEntity(entity.getCharacteristic()))
+                .build();
     }
 
-    public OrganizationEntity findOrgByIdWhichWillReturnModel(Long id) {
-        var entity = organizationRepository.findById(id);
+    public List<ProductDtoForFindAll> mapListDtoForFindAllFromListEntity(List<ProductEntity> entities) {
+        if (entities == null) {
+            return null;
+        }
 
-        return entity.orElseThrow(
-                () -> new NotFoundModelException("the organization with id = " + id + "not found"));
+        List<ProductDtoForFindAll> dtos = new ArrayList<>();
+
+        for (ProductEntity entity : entities) {
+            ProductDtoForFindAll dto = new ProductDtoForFindAll();
+            dto.setName(entity.getName());
+            dto.setOrganizationName(entity.getOrganization().getName());
+            dto.setPrice(entity.getPrice());
+            dto.setQuantity(entity.getQuantity());
+
+            dtos.add(dto);
+        }
+
+        return dtos;
+    }
+
+    public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {
+        return organizationRepository.findByName(name).orElseThrow(
+                () -> new NotFoundModelException("Organization with id = " + name + "not found"));
     }
 
     public CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id) {
-        var entity = characteristicRepository.findById(id);
-
-        return entity.orElseThrow(
-                () -> new NotFoundModelException("the characteristic with id = " + id + "not found"));
+        return characteristicRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("Characteristic with id = " + id + "not found"));
     }
 }

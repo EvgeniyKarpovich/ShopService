@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "organization")
+@Table(name = "organizations")
 @EntityListeners(AuditingEntityListener.class)
 public class OrganizationEntity {
 
@@ -39,6 +39,10 @@ public class OrganizationEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusOrganization status;
+
+    @Column(name = "money", columnDefinition = "DECIMAL DEFAULT 0")
+    @Builder.Default
+    private Double money = 0.0;
 
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)

@@ -40,11 +40,15 @@ public class ProductEntity {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_id")
     private DiscountEntity discount;
 
-    @OneToMany(mappedBy = "product")
+    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    private List<UserEntity> users = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
     private List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "keywords")
@@ -53,6 +57,10 @@ public class ProductEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "characteristic_id")
     private CharacteristicEntity characteristic;
+
+    @Builder.Default
+    @Column(name = "valid")
+    private Boolean isValid = false;
 
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)

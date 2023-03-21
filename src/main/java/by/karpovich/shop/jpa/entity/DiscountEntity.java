@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -23,8 +25,11 @@ public class DiscountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "discount")
-    private ProductEntity product;
+    @Column(name = "name")
+    private String name;
+
+    @OneToMany(mappedBy = "discount", fetch = FetchType.LAZY)
+    private List<ProductEntity> products = new ArrayList<>();
 
     @Column(name = "discount_percentage", nullable = false)
     private int discountPercentage;

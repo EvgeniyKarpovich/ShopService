@@ -1,4 +1,4 @@
-package by.karpovich.shop.api.dto.organization;
+package by.karpovich.shop.api.dto.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganizationForSaveDto {
+public class ProductDtoForFindAll {
 
     private String name;
 
-    private String description;
+    private String organizationName;
+
+    private Double price;
+
+    private Integer quantity;
 }

@@ -7,7 +7,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,11 +39,18 @@ public class UserEntity {
     @Column(name = "status")
     private StatusUser statusUser;
 
-    @Column(name = "balance")
-    private Double balance;
+    @Column(name = "balance", columnDefinition = "DECIMAL DEFAULT 0")
+    @Builder.Default
+    private Double balance = 0.0;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_products",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<ProductEntity> products = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();

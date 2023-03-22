@@ -2,6 +2,7 @@ package by.karpovich.shop.api.dto.product;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
 import by.karpovich.shop.api.dto.discount.DiscountDto;
+import by.karpovich.shop.api.dto.discount.DiscountDtoOut;
 import by.karpovich.shop.jpa.entity.CharacteristicEntity;
 import by.karpovich.shop.jpa.entity.CommentEntity;
 import by.karpovich.shop.jpa.entity.DiscountEntity;
@@ -31,7 +32,7 @@ public class ProductDtoOut {
 
     private Integer quantity;
 
-    private DiscountDto discount;
+    private DiscountDtoOut discount;
 
     private List<CommentEntity> comments = new ArrayList<>();
 

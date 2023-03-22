@@ -4,7 +4,6 @@ import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.notification.NotificationForSaveDto;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.NotificationEntity;
-import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.repository.NotificationRepository;
 import by.karpovich.shop.mapping.NotificationMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,18 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private  final UserService userService;
 
     @Transactional
     public void save(NotificationForSaveDto dto) {
         var entity = notificationMapper.mapEntityFromDto(dto);
         notificationRepository.save(entity);
+    }
+
+    public List<NotificationDto> findAllNotification(Long userId) {
+        var userEntity = userService.findUserByIdWhichWillReturnModel(userId);
+
+        return notificationMapper.mapListNotificationDtoFromListEntity(userEntity.getNotifications());
     }
 
     public NotificationEntity findNotificationByIdWhichWillReturnModel(Long id) {
@@ -35,8 +41,4 @@ public class NotificationService {
         return model.orElseThrow(
                 () -> new NotFoundModelException("Notification with ID = " + id + " not found"));
     }
-
-//    public List<NotificationDto> findAllByUserId(Long userId) {
-//        return notificationMapper.mapListNotificationDtoFromListEntity(notificationRepository.findAllByUserId(userId));
-//    }
 }

@@ -55,6 +55,7 @@ public class UserMapper {
 
         dto.setUsername(model.getUsername());
         dto.setEmail(model.getEmail());
+        dto.setBalance(model.getBalance());
 
         return dto;
     }

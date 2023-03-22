@@ -4,6 +4,8 @@ import by.karpovich.shop.jpa.entity.StatusOrganization;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +19,13 @@ public class AdminController {
     private final AdminService adminService;
 
     @PutMapping("/valid/{id}")
-    public void doProductValid(@PathVariable("id") Long productId) {
+    public ResponseEntity<?> doProductValid(@PathVariable("id") Long productId) {
         adminService.doProductValid(productId);
+
+        return new ResponseEntity<>("Product is valid", HttpStatus.OK);
     }
 
-    @PutMapping("/balance/inc/{id}/{sum}")
+    @PutMapping("/balances/inc/{id}/{sum}")
     public void addBalance(@PathVariable("id") Long userId,
                            @PathVariable("sum") Double sum) {
         adminService.addBalance(userId, sum);

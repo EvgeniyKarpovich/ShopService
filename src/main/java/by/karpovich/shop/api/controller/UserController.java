@@ -21,11 +21,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/notifications/{userId}")
-    public List<NotificationDto> findAllNotification(@PathVariable("userId") Long userId) {
-        return userService.findAllNotification(userId);
-    }
-
     @GetMapping("/{id}")
     public UserFullDtoOut findById(@PathVariable("id") Long id) {
         return userService.findById(id);

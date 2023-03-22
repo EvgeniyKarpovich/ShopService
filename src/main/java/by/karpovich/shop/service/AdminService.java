@@ -8,7 +8,6 @@ import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.UserRepository;
-import by.karpovich.shop.mapping.NotificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class AdminService {
     private final OrganizationRepository organizationRepository;
     private final ProductRepository productRepository;
     private final NotificationService notificationService;
-    private final NotificationMapper notificationMapper;
+    private final UserService userService;
 
     @Transactional
     public void doProductValid(Long productId) {
@@ -41,10 +40,10 @@ public class AdminService {
         if (sum < 0) {
             throw new IncorrectAmountException("Sum must be more 0");
         }
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.addBalance(userId, sum);
-        } else {
+        if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundModelException(String.format("User with id = %s not found", userId));
+        } else {
+            userRepository.addBalance(userId, sum);
         }
     }
 
@@ -69,8 +68,7 @@ public class AdminService {
     @Transactional
     public void sendNotification(Long userId, Long notificationId) {
         var notificationEntity = notificationService.findNotificationByIdWhichWillReturnModel(notificationId);
-        var userEntity = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundModelException(String.format("Organization with id = %s not found", userId)));
+        var userEntity = userService.findUserByIdWhichWillReturnModel(userId);
 
         List<NotificationEntity> notifications = userEntity.getNotifications();
         notifications.add(notificationEntity);

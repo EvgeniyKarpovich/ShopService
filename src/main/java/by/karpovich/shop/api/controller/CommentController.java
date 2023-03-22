@@ -5,10 +5,9 @@ import by.karpovich.shop.api.dto.comment.CommentForSaveDto;
 import by.karpovich.shop.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/comments")
@@ -20,5 +19,10 @@ public class CommentController {
     @PostMapping
     public CommentDtoOut save(@Valid @RequestBody CommentForSaveDto dto) {
         return commentService.save(dto);
+    }
+
+    @GetMapping("/products/{id}")
+    public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
+        return commentService.findAllProductCommentsById(productId);
     }
 }

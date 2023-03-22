@@ -8,4 +8,6 @@ public class UserFullDtoOut {
     private String username;
 
     private String email;
+
+    private Double balance;
 }

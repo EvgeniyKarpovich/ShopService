@@ -29,10 +29,10 @@ public class OrganizationService {
     @Transactional
     public void save(OrganizationForSaveUpdateDto dto) {
         validateAlreadyExists(dto, null);
-        var entity = organizationMapper.mapEntityFromDto(dto);
+        var organization = organizationMapper.mapEntityFromDto(dto);
 
-        log.info("method save - Organization with name {} saved", entity.getName());
-        organizationRepository.save(entity);
+        log.info("method save - Organization with name {} saved", organization.getName());
+        organizationRepository.save(organization);
     }
 
     public OrganizationDtoOut findById(Long id) {
@@ -44,10 +44,10 @@ public class OrganizationService {
     }
 
     public List<OrganizationDtoForFindAll> findAll() {
-        var entities = organizationRepository.findAll();
+        var organizationEntities = organizationRepository.findAll();
 
-        log.info("method findAll - organizations found  = {} ", entities.size());
-        return organizationMapper.mapListDtoForFindAllFromListEntity(entities);
+        log.info("method findAll - organizations found  = {} ", organizationEntities.size());
+        return organizationMapper.mapListDtoForFindAllFromListEntity(organizationEntities);
     }
 
     @Transactional
@@ -88,5 +88,10 @@ public class OrganizationService {
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException(String.format("Organization with name = %s already exist", dto.getName()));
         }
+    }
+
+    public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {
+        return organizationRepository.findByName(name).orElseThrow(
+                () -> new NotFoundModelException("Organization with id = " + name + "not found"));
     }
 }

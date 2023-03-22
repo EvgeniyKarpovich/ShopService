@@ -1,12 +1,11 @@
 package by.karpovich.shop.api.controller;
 
-import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.service.ProductService;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @PostMapping
-    public void save(@Positive @RequestBody ProductDtoForSave dto) {
+    public void save(@Valid @RequestBody ProductDtoForSave dto) {
         productService.save(dto);
     }
 
@@ -39,11 +38,6 @@ public class ProductController {
     @PutMapping("/discounts/{id}/{disId}")
     public void addDiscount(@PathVariable("id") Long productId, @PathVariable("disId") Long disId) {
         productService.addDiscount(productId, disId);
-    }
-
-    @GetMapping("/comments/{id}")
-    public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
-        return productService.findAllProductCommentsById(productId);
     }
 
     @GetMapping

@@ -3,7 +3,6 @@ package by.karpovich.shop.service;
 import by.karpovich.shop.api.dto.authentification.JwtResponse;
 import by.karpovich.shop.api.dto.authentification.LoginForm;
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
-import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
@@ -12,7 +11,6 @@ import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.UserRepository;
-import by.karpovich.shop.mapping.NotificationMapper;
 import by.karpovich.shop.mapping.UserMapper;
 import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.security.UserDetailsImpl;
@@ -41,7 +39,6 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserMapper userMapper;
-    private final NotificationMapper notificationMapper;
 
     private static final String ROLE_USER = "ROLE_USER";
 
@@ -96,20 +93,13 @@ public class UserService {
         return userMapper.mapUserFullDtoFromModel(entity);
     }
 
-    public List<NotificationDto> findAllNotification(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(
-                        () -> new NotFoundModelException(String.format("User with id = %s not found", userId)));
-
-        return notificationMapper.mapListNotificationDtoFromListEntity(userEntity.getNotifications());
-    }
-
     @Transactional
     public void deleteById(Long id) {
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
+        if (!userRepository.findById(id).isPresent()) {
+            throw new NotFoundModelException(String.format("User with id = %s not found", id));
         }
-        throw new NotFoundModelException(String.format("User with id = %s not found", id));
+        userRepository.deleteById(id);
+
     }
 
     public List<UserDtoForFindAll> findAll() {
@@ -146,6 +136,11 @@ public class UserService {
         log.info("method findByName -  User with username = {} found", entity.getUsername());
 
         return entity;
+    }
+
+    public UserEntity findUserByIdWhichWillReturnModel(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
 
     private void validateAlreadyExists(RegistrationForm dto, Long id) {

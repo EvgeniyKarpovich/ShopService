@@ -3,15 +3,10 @@ package by.karpovich.shop.mapping;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
-import by.karpovich.shop.exception.NotFoundModelException;
-import by.karpovich.shop.jpa.entity.CharacteristicEntity;
-import by.karpovich.shop.jpa.entity.OrganizationEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
-import by.karpovich.shop.jpa.repository.CharacteristicRepository;
-import by.karpovich.shop.jpa.repository.OrganizationRepository;
-import ch.qos.logback.core.sift.AppenderFactoryUsingSiftModel;
+import by.karpovich.shop.service.CharacteristicService;
+import by.karpovich.shop.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.LifecycleState;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,9 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductMapper {
 
-    private final OrganizationRepository organizationRepository;
-    private final CharacteristicRepository characteristicRepository;
     private final CharacteristicMapper characteristicMapper;
+    private final CharacteristicService characteristicService;
+    private final OrganizationService organizationService;
+    private final DiscountMapper discountMapper;
+
 
     public ProductEntity mapEntityFromDto(ProductDtoForSave dto) {
         if (dto == null) {
@@ -33,11 +30,11 @@ public class ProductMapper {
         return ProductEntity.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .organization(findOrgByNameWhichWillReturnModel(dto.getOrganizationName()))
+                .organization(organizationService.findOrgByNameWhichWillReturnModel(dto.getOrganizationName()))
                 .price(dto.getPrice())
                 .quantity(dto.getQuantity())
                 .keywords(dto.getKeywords())
-                .characteristic(findCharacterByIdWhichWillReturnModel(dto.getCharacteristicId()))
+                .characteristic(characteristicService.findCharacterByIdWhichWillReturnModel(dto.getCharacteristicId()))
                 .build();
     }
 
@@ -51,6 +48,7 @@ public class ProductMapper {
                 .description(entity.getDescription())
                 .organizationName(entity.getOrganization().getName())
                 .price(entity.getPrice())
+                .discount(discountMapper.mapDtoFromEntity(entity.getDiscount()))
                 .quantity(entity.getQuantity())
                 .keywords(entity.getKeywords())
                 .characteristic(characteristicMapper.mapDtoFromEntity(entity.getCharacteristic()))
@@ -75,15 +73,5 @@ public class ProductMapper {
         }
 
         return dtos;
-    }
-
-    public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {
-        return organizationRepository.findByName(name).orElseThrow(
-                () -> new NotFoundModelException("Organization with id = " + name + "not found"));
-    }
-
-    public CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id) {
-        return characteristicRepository.findById(id).orElseThrow(
-                () -> new NotFoundModelException("Characteristic with id = " + id + "not found"));
     }
 }

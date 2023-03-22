@@ -16,18 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductDtoForSave {
 
-    @NotBlank
+    @NotBlank(message = "Enter name")
     private String name;
 
     private String description;
 
-    @NotBlank
+    @NotBlank(message = "Enter name organization")
     private String organizationName;
 
-    @Positive
+    @Positive(message = "Price must be more 0")
     private Double price;
 
-    @Positive
+    @Positive(message = "Quantity must be more 0")
     private Integer quantity;
 
     private List<String> keywords = new ArrayList<>();

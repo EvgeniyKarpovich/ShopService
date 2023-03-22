@@ -2,6 +2,7 @@ package by.karpovich.shop.service;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
 import by.karpovich.shop.exception.NotFoundModelException;
+import by.karpovich.shop.jpa.entity.CharacteristicEntity;
 import by.karpovich.shop.jpa.repository.CharacteristicRepository;
 import by.karpovich.shop.mapping.CharacteristicMapper;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,10 @@ public class CharacteristicService {
             throw new NotFoundModelException(String.format("characteristic with id = %s not found", id));
         }
         log.info("method deleteById - characteristic with id = {} deleted", id);
+    }
+
+    public CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id) {
+        return characteristicRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("Characteristic with id = " + id + "not found"));
     }
 }

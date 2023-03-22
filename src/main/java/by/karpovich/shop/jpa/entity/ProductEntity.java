@@ -61,6 +61,9 @@ public class ProductEntity {
     @Column(name = "valid")
     private Boolean isValid = false;
 
+    @Column(name = "average_rating")
+    private Double averageRating;
+
     @CreatedDate
     @Column(name = "date_of_creation", updatable = false)
     private Instant dateOfCreation;

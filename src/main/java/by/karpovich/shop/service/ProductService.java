@@ -7,9 +7,9 @@ import by.karpovich.shop.exception.NotEnoughMoneyException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.exception.NotInStockException;
 import by.karpovich.shop.exception.NotValidException;
+import by.karpovich.shop.jpa.entity.DiscountEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
-import by.karpovich.shop.jpa.repository.DiscountRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.UserRepository;
 import by.karpovich.shop.mapping.ProductMapper;
@@ -27,9 +27,9 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final DiscountRepository discountRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final DiscountService discountService;
 
     @Transactional
     public ProductDtoOut save(ProductDtoForSave dto) {
@@ -40,15 +40,14 @@ public class ProductService {
     }
 
     @Transactional
-    public void addDiscount(Long productId, Long discountId) {
-        var product = productRepository.findById(productId).orElseThrow(
-                () -> new NotFoundModelException("not found"));
+    public void addDiscount(List<Long> productsId, Long discountId) {
+        DiscountEntity discount = discountService.findDiscountByIdWhichWillReturnModel(discountId);
 
-        var discount = discountRepository.findById(discountId).orElseThrow(
-                () -> new NotFoundModelException("not found"));
-
-        product.setDiscount(discount);
-        productRepository.save(product);
+        for (Long id : productsId) {
+            ProductEntity product = findProductByIdWhichWillReturnModel(id);
+            product.setDiscount(discount);
+            productRepository.save(product);
+        }
     }
 
     @Transactional

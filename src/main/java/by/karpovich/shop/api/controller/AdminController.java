@@ -1,15 +1,14 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.notification.NotificationDtoForSend;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.service.AdminService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admins")
@@ -61,8 +60,8 @@ public class AdminController {
         adminService.setUserStatus(id, StatusUser.ACTIVE);
     }
 
-    @PutMapping("/notifications/{userId}/{notificationId}")
-    public void sendNotification(@PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId) {
-        adminService.sendNotification(userId, notificationId);
+    @PutMapping("/notifications")
+    public void sendNotification(@Valid @RequestBody NotificationDtoForSend dto) {
+        adminService.sendNotification(dto);
     }
 }

@@ -1,10 +1,12 @@
 package by.karpovich.shop.service;
 
+import by.karpovich.shop.api.dto.notification.NotificationDtoForSend;
 import by.karpovich.shop.exception.IncorrectAmountException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.NotificationEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
 import by.karpovich.shop.jpa.entity.StatusUser;
+import by.karpovich.shop.jpa.repository.NotificationRepository;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.UserRepository;
@@ -13,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.Instant;
 
 @Slf4j
 @Service
@@ -23,7 +25,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
     private final ProductRepository productRepository;
-    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
     private final UserService userService;
 
     @Transactional
@@ -66,14 +68,15 @@ public class AdminService {
     }
 
     @Transactional
-    public void sendNotification(Long userId, Long notificationId) {
-        var notificationEntity = notificationService.findNotificationByIdWhichWillReturnModel(notificationId);
-        var userEntity = userService.findUserByIdWhichWillReturnModel(userId);
-
-        List<NotificationEntity> notifications = userEntity.getNotifications();
-        notifications.add(notificationEntity);
-        userEntity.setNotifications(notifications);
-        userRepository.save(userEntity);
+    public void sendNotification(NotificationDtoForSend dto) {
+        NotificationEntity entity = new NotificationEntity();
+        entity.setName(dto.getName());
+        entity.setDateOfCreation(Instant.now());
+        entity.setMessage(dto.getMessage());
+        for (Long id : dto.getUsersId()) {
+            entity.setUser(userService.findUserByIdWhichWillReturnModel(id));
+        }
+        notificationRepository.save(entity);
     }
 }
 

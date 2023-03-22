@@ -3,6 +3,7 @@ package by.karpovich.shop.service;
 import by.karpovich.shop.api.dto.discount.DiscountDto;
 import by.karpovich.shop.api.dto.discount.DiscountDtoOut;
 import by.karpovich.shop.exception.NotFoundModelException;
+import by.karpovich.shop.jpa.entity.DiscountEntity;
 import by.karpovich.shop.jpa.repository.DiscountRepository;
 import by.karpovich.shop.mapping.DiscountMapper;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,10 @@ public class DiscountService {
             throw new NotFoundModelException(String.format("Discount with id = %s not found", id));
         }
         log.info("method deleteById - Discount with id = {} deleted", id);
+    }
+
+    public DiscountEntity findDiscountByIdWhichWillReturnModel(Long id) {
+        return discountRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("Discount with id = " + id + "not found"));
     }
 }

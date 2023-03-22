@@ -7,9 +7,8 @@ import by.karpovich.shop.exception.NotEnoughMoneyException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.exception.NotInStockException;
 import by.karpovich.shop.exception.NotValidException;
-import by.karpovich.shop.jpa.entity.DiscountEntity;
-import by.karpovich.shop.jpa.entity.ProductEntity;
-import by.karpovich.shop.jpa.entity.StatusOrganization;
+import by.karpovich.shop.jpa.entity.*;
+import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.UserRepository;
 import by.karpovich.shop.mapping.ProductMapper;
@@ -18,7 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,6 +32,7 @@ public class ProductService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final DiscountService discountService;
+    private final OrganizationRepository organizationRepository;
 
     @Transactional
     public ProductDtoOut save(ProductDtoForSave dto) {
@@ -77,9 +80,40 @@ public class ProductService {
         userById.getProducts().add(productById);
         productById.setQuantity(productById.getQuantity() - 1);
         productById.getOrganization().setMoney(money + price * 0.90);
+        productById.setDateOfPurchase(Instant.now());
 
         userRepository.save(userById);
         productRepository.save(productById);
+    }
+
+    @Transactional
+    public void returnProduct(Long userId, Long productId) {
+        UserEntity user = userService.findUserByIdWhichWillReturnModel(userId);
+
+        Optional<ProductEntity> productById = user.getProducts().stream()
+                .filter(prId -> prId.getId().equals(productId))
+                .findFirst();
+
+        ProductEntity product = productById.orElseThrow(
+                () -> new NotFoundModelException("Product not found"));
+
+        OrganizationEntity organization = product.getOrganization();
+
+        if (product.getDateOfPurchase().isBefore(Instant.now().plus(1, ChronoUnit.DAYS))
+                && product.getDiscount() == null) {
+            user.getProducts().remove(product);
+            user.setBalance(user.getBalance() + product.getPrice());
+            organization.setMoney(organization.getMoney() - product.getPrice());
+        }
+        if (product.getDiscount() != null) {
+            int discountPercentage = product.getDiscount().getDiscountPercentage();
+            user.getProducts().remove(product);
+            user.setBalance(user.getBalance() + product.getPrice());
+            organization.setMoney(organization.getMoney() - (product.getPrice() + (product.getPrice() / 100 * discountPercentage)));
+        }
+
+        organizationRepository.save(organization);
+        userRepository.save(user);
     }
 
     public List<ProductDtoForFindAll> findAll() {

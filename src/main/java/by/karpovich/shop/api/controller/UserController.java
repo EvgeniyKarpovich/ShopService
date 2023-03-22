@@ -1,10 +1,9 @@
 package by.karpovich.shop.api.controller;
 
-import by.karpovich.shop.api.dto.notification.NotificationDto;
+import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
-import by.karpovich.shop.jpa.entity.NotificationEntity;
 import by.karpovich.shop.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,11 @@ public class UserController {
                                     @PathVariable("id") Long id) {
         userService.update(id, dto);
         return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
+    }
+
+    @GetMapping("/products/{userId}")
+    public List<ProductDtoForFindAll> userProducts(@PathVariable("userId") Long userid) {
+        return userService.userProducts(userid);
     }
 
     @DeleteMapping("/{id}")

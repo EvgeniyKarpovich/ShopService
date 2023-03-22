@@ -70,7 +70,6 @@ public class ProductMapper {
             dto.setName(entity.getName());
             dto.setOrganizationName(entity.getOrganization().getName());
             dto.setPrice(entity.getPrice());
-            dto.setQuantity(entity.getQuantity());
 
             dtos.add(dto);
         }

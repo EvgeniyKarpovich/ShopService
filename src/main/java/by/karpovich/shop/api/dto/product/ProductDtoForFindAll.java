@@ -16,6 +16,4 @@ public class ProductDtoForFindAll {
     private String organizationName;
 
     private Double price;
-
-    private Integer quantity;
 }

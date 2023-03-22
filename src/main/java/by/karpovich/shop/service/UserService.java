@@ -3,14 +3,17 @@ package by.karpovich.shop.service;
 import by.karpovich.shop.api.dto.authentification.JwtResponse;
 import by.karpovich.shop.api.dto.authentification.LoginForm;
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
+import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
 import by.karpovich.shop.exception.DuplicateException;
 import by.karpovich.shop.exception.NotFoundModelException;
+import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.UserRepository;
+import by.karpovich.shop.mapping.ProductMapper;
 import by.karpovich.shop.mapping.UserMapper;
 import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.security.UserDetailsImpl;
@@ -39,6 +42,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserMapper userMapper;
+    private final ProductMapper productMapper;
 
     private static final String ROLE_USER = "ROLE_USER";
 
@@ -99,7 +103,12 @@ public class UserService {
             throw new NotFoundModelException(String.format("User with id = %s not found", id));
         }
         userRepository.deleteById(id);
+    }
 
+    public List<ProductDtoForFindAll> userProducts(Long userId) {
+        List<ProductEntity> products = findUserByIdWhichWillReturnModel(userId).getProducts();
+
+        return productMapper.mapListDtoForFindAllFromListEntity(products);
     }
 
     public List<UserDtoForFindAll> findAll() {

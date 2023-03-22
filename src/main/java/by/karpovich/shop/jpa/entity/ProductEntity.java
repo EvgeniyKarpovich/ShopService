@@ -50,6 +50,9 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @Column(name = "date_of_purchase")
+    private Instant dateOfPurchase;
+
     @Column(name = "keywords")
     private List<String> keywords = new ArrayList<>();
 

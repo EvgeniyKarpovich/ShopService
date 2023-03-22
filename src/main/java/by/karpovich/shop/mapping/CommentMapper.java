@@ -5,8 +5,9 @@ import by.karpovich.shop.api.dto.comment.CommentForSaveDto;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.CommentEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
+import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.ProductRepository;
-import by.karpovich.shop.service.UserService;
+import by.karpovich.shop.jpa.repository.UserRepository;
 import by.karpovich.shop.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentMapper {
 
-    private final UserService userService;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     public CommentEntity mapEntityFromDto(CommentForSaveDto dto) {
         if (dto == null) {
@@ -27,10 +28,10 @@ public class CommentMapper {
         }
 
         return CommentEntity.builder()
-                .sender(userService.findUserByIdWhichWillReturnModel(dto.getUserId()).getUsername())
+                .sender(findUserByIdWhichWillReturnModel(dto.getUserId()).getUsername())
                 .message(dto.getMessage())
                 .rating(dto.getRating())
-                .user(userService.findUserByIdWhichWillReturnModel(dto.getUserId()))
+                .user(findUserByIdWhichWillReturnModel(dto.getUserId()))
                 .product(findProductByIdWhichWillReturnModel(dto.getProductId()))
                 .build();
     }
@@ -65,5 +66,10 @@ public class CommentMapper {
     public ProductEntity findProductByIdWhichWillReturnModel(Long id) {
         return productRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("Product with id = " + id + "not found"));
+    }
+
+    public UserEntity findUserByIdWhichWillReturnModel(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
 }

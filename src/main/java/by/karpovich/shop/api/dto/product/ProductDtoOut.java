@@ -1,6 +1,7 @@
 package by.karpovich.shop.api.dto.product;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
+import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.discount.DiscountDto;
 import by.karpovich.shop.api.dto.discount.DiscountDtoOut;
 import by.karpovich.shop.jpa.entity.CharacteristicEntity;
@@ -32,9 +33,11 @@ public class ProductDtoOut {
 
     private Integer quantity;
 
+    private String averageRating;
+
     private DiscountDtoOut discount;
 
-    private List<CommentEntity> comments = new ArrayList<>();
+    private List<CommentDtoOut> comments = new ArrayList<>();
 
     private List<String> keywords = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package by.karpovich.shop.mapping;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
+import by.karpovich.shop.jpa.entity.CommentEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.service.CharacteristicService;
 import by.karpovich.shop.service.OrganizationService;
@@ -20,7 +21,7 @@ public class ProductMapper {
     private final CharacteristicService characteristicService;
     private final OrganizationService organizationService;
     private final DiscountMapper discountMapper;
-
+    private final CommentMapper commentMapper;
 
     public ProductEntity mapEntityFromDto(ProductDtoForSave dto) {
         if (dto == null) {
@@ -50,8 +51,10 @@ public class ProductMapper {
                 .price(entity.getPrice())
                 .discount(discountMapper.mapDtoFromEntity(entity.getDiscount()))
                 .quantity(entity.getQuantity())
+                .averageRating(getSumRatingFromProductComments(entity))
                 .keywords(entity.getKeywords())
                 .characteristic(characteristicMapper.mapDtoFromEntity(entity.getCharacteristic()))
+                .comments(commentMapper.mapListDtoFromListEntity(entity.getComments()))
                 .build();
     }
 
@@ -73,5 +76,18 @@ public class ProductMapper {
         }
 
         return dtos;
+    }
+
+    public String getSumRatingFromProductComments(ProductEntity entity) {
+        int size = entity.getComments().size();
+        Integer sum = null;
+        if (size > 0) {
+            sum = entity.getComments().stream()
+                    .map(CommentEntity::getRating)
+                    .reduce(0, Integer::sum);
+
+            return String.valueOf(sum / size);
+        }
+        return "No ratings";
     }
 }

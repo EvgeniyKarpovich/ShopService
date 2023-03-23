@@ -69,6 +69,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(NotValidOrganization.class)
+    public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(NotValidOrganization e) {
+        ResponseBody exceptionResponse = new ResponseBody(
+                Collections.singletonList(e.getMessage()), HttpStatus.NOT_FOUND, Instant.now());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(IncorrectUser.class)
     public ResponseEntity<ResponseBody> handlerMethodArgumentNotValidException(IncorrectUser e) {
         ResponseBody exceptionResponse = new ResponseBody(

@@ -40,6 +40,9 @@ public class UserEntity {
     @Column(name = "status")
     private StatusUser statusUser;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<OrganizationEntity> organizations = new ArrayList<>();
+
     @Column(name = "balance", columnDefinition = "DECIMAL DEFAULT 0")
     @Builder.Default
     private Double balance = 0.0;

@@ -3,10 +3,12 @@ package by.karpovich.shop.mapping;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
+import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.CommentEntity;
+import by.karpovich.shop.jpa.entity.OrganizationEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
+import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.service.CharacteristicService;
-import by.karpovich.shop.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class ProductMapper {
 
     private final CharacteristicMapper characteristicMapper;
     private final CharacteristicService characteristicService;
-    private final OrganizationService organizationService;
+    private final OrganizationRepository organizationRepository;
     private final DiscountMapper discountMapper;
     private final CommentMapper commentMapper;
 
@@ -31,7 +33,7 @@ public class ProductMapper {
         return ProductEntity.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .organization(organizationService.findOrgByNameWhichWillReturnModel(dto.getOrganizationName()))
+                .organization(findOrgByNameWhichWillReturnModel(dto.getOrganizationName()))
                 .price(dto.getPrice())
                 .quantity(dto.getQuantity())
                 .keywords(dto.getKeywords())
@@ -78,15 +80,19 @@ public class ProductMapper {
     }
 
     public String getSumRatingFromProductComments(ProductEntity entity) {
-        int size = entity.getComments().size();
-        Integer sum = null;
-        if (size > 0) {
-            sum = entity.getComments().stream()
-                    .map(CommentEntity::getRating)
-                    .reduce(0, Integer::sum);
-
-            return String.valueOf(sum / size);
+        if (entity.getComments() == null) {
+            return "No ratings";
         }
-        return "No ratings";
+        Integer sum = entity.getComments().stream()
+                .map(CommentEntity::getRating)
+                .reduce(0, Integer::sum);
+
+        return String.valueOf(sum / entity.getComments().size());
+    }
+
+    public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {
+        return organizationRepository.findByName(name).orElseThrow(
+                () -> new NotFoundModelException("Organization with id = " + name + "not found"));
     }
 }
+

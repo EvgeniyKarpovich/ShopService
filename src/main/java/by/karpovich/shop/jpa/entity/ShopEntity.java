@@ -16,41 +16,19 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "organizations")
+@Table(name = "shops")
 @EntityListeners(AuditingEntityListener.class)
-public class OrganizationEntity {
+public class ShopEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY)
-    private List<ProductEntity> products = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    @Column(name = "logo")
-    private String logo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id")
-    private ShopEntity shop;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private StatusOrganization status;
-
-    @Builder.Default
-    @Column(name = "valid")
-    private Boolean isValid = false;
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private List<OrganizationEntity> organizations = new ArrayList<>();
 
     @Column(name = "money", columnDefinition = "DECIMAL DEFAULT 0")
     @Builder.Default

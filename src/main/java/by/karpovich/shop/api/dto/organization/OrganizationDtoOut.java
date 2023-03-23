@@ -1,10 +1,13 @@
 package by.karpovich.shop.api.dto.organization;
 
 
+import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -21,4 +24,6 @@ public class OrganizationDtoOut {
     private byte[] logo;
 
     private Double money;
+
+    private List<ProductDtoForFindAll> products;
 }

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admins")
 @RequiredArgsConstructor
@@ -30,6 +32,11 @@ public class AdminController {
         adminService.addBalance(userId, sum);
     }
 
+    @GetMapping("/notValidOrg")
+    public List<Long> findNotValidOrganization() {
+        return adminService.findNotValidOrganization();
+    }
+
     @PutMapping("/statuses/org/frozen/{id}/{status}")
     public void setFrozenStatusOrg(@PathVariable("id") Long id, @PathVariable("status") StatusOrganization status) {
         adminService.setOrganizationStatus(id, StatusOrganization.FROZEN);
@@ -40,7 +47,7 @@ public class AdminController {
         adminService.setOrganizationStatus(id, StatusOrganization.DELETED);
     }
 
-    @PutMapping("/statuses/active/org/{id}/{status}")
+    @PutMapping("/statuses/org/active/{id}/{status}")
     public void setActiveStatusOrg(@PathVariable("id") Long id, @PathVariable("status") StatusOrganization status) {
         adminService.setOrganizationStatus(id, StatusOrganization.ACTIVE);
     }

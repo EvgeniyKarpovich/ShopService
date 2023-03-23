@@ -7,6 +7,8 @@ import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +45,13 @@ public class ProductController {
     @PutMapping("/discounts/{disId}/")
     public void addDiscount(@PathVariable("disId") Long disId, @RequestParam("productsId") List<Long> productsId) {
         productService.addDiscount(productsId, disId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") Long productId) {
+        productService.deleteById(productId);
+
+        return new ResponseEntity<>("Product deleted", HttpStatus.OK);
     }
 
     @GetMapping

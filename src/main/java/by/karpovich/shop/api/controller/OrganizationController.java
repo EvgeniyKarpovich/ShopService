@@ -33,4 +33,11 @@ public class OrganizationController {
     public OrganizationDtoOut findById(@PathVariable("id") Long id) {
         return organizationService.findById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteByID(@PathVariable("id") Long orgId) {
+        organizationService.deleteById(orgId);
+
+        return new ResponseEntity<>("Organization deleted", HttpStatus.OK);
+    }
 }

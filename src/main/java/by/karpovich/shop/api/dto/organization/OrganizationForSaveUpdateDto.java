@@ -17,4 +17,8 @@ public class OrganizationForSaveUpdateDto {
 
     @NotBlank
     private String description;
+
+    private  Long userId;
+
+    private Long shopId = 1L;
 }

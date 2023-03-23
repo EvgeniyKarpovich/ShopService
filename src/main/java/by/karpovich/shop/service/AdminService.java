@@ -4,6 +4,7 @@ import by.karpovich.shop.api.dto.notification.NotificationDtoForSend;
 import by.karpovich.shop.exception.IncorrectAmountException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.NotificationEntity;
+import by.karpovich.shop.jpa.entity.OrganizationEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.repository.NotificationRepository;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -56,6 +59,13 @@ public class AdminService {
         } else {
             throw new NotFoundModelException(String.format("User with id = %s not found", userId));
         }
+    }
+
+    public List<Long> findNotValidOrganization() {
+        return organizationRepository.findAll()
+                .stream().filter(status -> status.getStatus().equals(StatusOrganization.NOT_VALID))
+                .map(OrganizationEntity::getId)
+                .collect(Collectors.toList());
     }
 
     @Transactional

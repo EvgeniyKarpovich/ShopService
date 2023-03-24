@@ -1,5 +1,6 @@
 package by.karpovich.shop.api.dto.notification;
 
+import by.karpovich.shop.api.dto.validation.userIdValidator.ValidUserId;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,5 @@ public class NotificationDtoForSend {
     @NotBlank(message = "Enter message")
     private String message;
 
-    private List<Long> usersId;
+    private List<@ValidUserId Long> usersId;
 }

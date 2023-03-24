@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NotificationForSaveDto {
 
+    @NotBlank(message = "Enter name")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Enter message")
     private String message;
 
     private Long userId;

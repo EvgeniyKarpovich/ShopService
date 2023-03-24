@@ -7,7 +7,6 @@ import by.karpovich.shop.exception.*;
 import by.karpovich.shop.jpa.entity.DiscountEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.entity.StatusOrganization;
-import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.jpa.repository.ShopRepository;
@@ -60,13 +59,8 @@ public class ProductService {
     public void buyProduct(Long userId, Long productId) {
         var productById = findProductByIdWhichWillReturnModel(productId);
         var userById = userService.findUserByIdWhichWillReturnModel(userId);
-
         var shopId = productById.getOrganization().getShop().getId();
-
         var shop = shopService.findById(shopId);
-
-        var user = productById.getOrganization().getUser();
-
         var balance = userById.getBalance();
         var price = productById.getPrice();
         var money = productById.getOrganization().getMoney();
@@ -110,34 +104,31 @@ public class ProductService {
 
         var product = productById.orElseThrow(
                 () -> new NotFoundModelException("Product not found"));
-
         var shopId = product.getOrganization().getShop().getId();
-
         var shop = shopService.findById(shopId);
-
         var price = product.getPrice();
         var balance = user.getBalance();
         var money = product.getOrganization().getMoney();
         var moneyOfShop = shop.getMoney();
-
         var organization = product.getOrganization();
 
-        if (product.getDateOfPurchase().isBefore(Instant.now().plus(1, ChronoUnit.DAYS))
-                && product.getDiscount() != null) {
-
+        if (product.getDiscount() != null) {
             int discountPercentage = product.getDiscount().getDiscountPercentage();
             price = (price * discountPercentage / 100);
         }
 
-        user.getProducts().remove(product);
-        user.setBalance(balance + price);
-        organization.setMoney(money - (price * 0.90));
-        shop.setMoney(moneyOfShop - (price * 0.10));
-        product.setQuantity(product.getQuantity() + 1);
+        if (product.getDateOfPurchase().isBefore(Instant.now().plus(1, ChronoUnit.DAYS))) {
+            user.getProducts().remove(product);
+            user.setBalance(balance + price);
+            organization.setMoney(money - (price * 0.90));
+            shop.setMoney(moneyOfShop - (price * 0.10));
+            product.setQuantity(product.getQuantity() + 1);
 
-        shopRepository.save(shop);
-        organizationRepository.save(organization);
-        userRepository.save(user);
+            shopRepository.save(shop);
+            organizationRepository.save(organization);
+            userRepository.save(user);
+        }
+        throw new NotValidException("More than a day has passed since the purchase, the goods can not be returned");
     }
 
     public List<ProductDtoForFindAll> findAll() {

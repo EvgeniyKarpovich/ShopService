@@ -57,6 +57,12 @@ public class ProductController {
         productService.addDiscount(productsId, disId);
     }
 
+    @PutMapping("/discounts/remove/{discountId}")
+    public void deleteDiscountFromProducts(@PathVariable("discountId") Long discountId,
+                                           @RequestParam("productsId") List<Long> productsId) {
+        productService.deleteDiscountFromProducts(productsId, discountId);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long productId) {
         productService.deleteById(productId);

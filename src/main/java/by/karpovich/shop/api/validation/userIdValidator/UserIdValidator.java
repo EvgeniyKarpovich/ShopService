@@ -1,4 +1,4 @@
-package by.karpovich.shop.api.dto.validation.emailValidator;
+package by.karpovich.shop.api.validation.userIdValidator;
 
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.UserRepository;
@@ -9,16 +9,16 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
+public class UserIdValidator implements ConstraintValidator<ValidUserId, Long> {
 
     private final UserRepository userRepository;
 
     @Override
-    public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        if (email == null) {
+    public boolean isValid(Long id, ConstraintValidatorContext constraintValidatorContext) {
+        if (id == null) {
             return false;
         }
-        Optional<UserEntity> entity = userRepository.findByEmail(email);
-        return !entity.isPresent();
+        Optional<UserEntity> entity = userRepository.findById(id);
+        return entity.isPresent();
     }
 }

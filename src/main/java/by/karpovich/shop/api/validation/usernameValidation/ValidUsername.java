@@ -1,4 +1,4 @@
-package by.karpovich.shop.api.dto.validation.userIdValidator;
+package by.karpovich.shop.api.validation.usernameValidation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,12 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UserIdValidator.class)
+@Constraint(validatedBy = UsernameValidator.class)
 @Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidUserId {
+public @interface ValidUsername {
 
-    String message() default "User id not found";
+    String message() default "Username already exist!";
 
     Class<?>[] groups() default {};
 

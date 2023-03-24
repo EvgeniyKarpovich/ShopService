@@ -1,4 +1,4 @@
-package by.karpovich.shop.api.dto.validation.emailValidator;
+package by.karpovich.shop.api.validation.emailValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

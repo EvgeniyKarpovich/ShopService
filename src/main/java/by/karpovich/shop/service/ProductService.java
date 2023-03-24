@@ -117,7 +117,9 @@ public class ProductService {
             price = (price * discountPercentage / 100);
         }
 
-        if (product.getDateOfPurchase().isBefore(Instant.now().plus(1, ChronoUnit.DAYS))) {
+        if (product.getDateOfPurchase().plus(1, ChronoUnit.DAYS).isBefore(Instant.now())) {
+            throw new NotValidException("More than a day has passed since the purchase, the goods can not be returned");
+        } else {
             user.getProducts().remove(product);
             user.setBalance(balance + price);
             organization.setMoney(money - (price * 0.90));
@@ -128,7 +130,6 @@ public class ProductService {
             organizationRepository.save(organization);
             userRepository.save(user);
         }
-        throw new NotValidException("More than a day has passed since the purchase, the goods can not be returned");
     }
 
     public List<ProductDtoForFindAll> findAll() {

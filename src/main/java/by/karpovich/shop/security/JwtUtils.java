@@ -17,12 +17,13 @@ public class JwtUtils {
     @Value("${jwt.token.expired}")
     private int jwtExpirationMs;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Long userId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("id", userId)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -35,7 +36,7 @@ public class JwtUtils {
 
     public String getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return (String) claims.get("id");
+        return String.valueOf(claims.get("id"));
     }
 
     public boolean validateJwtToken(String authToken) {

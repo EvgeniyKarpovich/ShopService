@@ -72,7 +72,7 @@ public class UserService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        String jwt = jwtUtils.generateToken(userByName.getUsername());
+        String jwt = jwtUtils.generateToken(userByName.getUsername(), userByName.getId());
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())

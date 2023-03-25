@@ -10,7 +10,6 @@ import by.karpovich.shop.api.dto.user.UserFullDtoOut;
 import by.karpovich.shop.exception.DuplicateException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.ProductEntity;
-import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.UserRepository;
 import by.karpovich.shop.mapping.ProductMapper;
@@ -22,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,27 +36,16 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserMapper userMapper;
     private final ProductMapper productMapper;
 
-    private static final String ROLE_USER = "ROLE_USER";
-
     @Transactional
     public void signUp(RegistrationForm dto) {
-        validateAlreadyExists(dto, null);
-        var entity = new UserEntity();
+        validateAlreadyExists(dto);
 
-        entity.setUsername(dto.getUsername());
-        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        entity.setEmail(dto.getEmail());
-        entity.setRoles(roleService.findRoleByName(ROLE_USER));
-        entity.setStatusUser(StatusUser.ACTIVE);
-
-        userRepository.save(entity);
+        userRepository.save(userMapper.mapEntityFromDtoForRegForm(dto));
     }
 
     @Transactional
@@ -67,26 +55,24 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
 
         UserEntity userByName = findByName(username);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
         String jwt = jwtUtils.generateToken(userByName.getUsername(), userByName.getId());
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+        return JwtResponse.builder()
+                .id(userDetails.getId())
+                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .roles(mapStringRolesFromUserDetails(userDetails))
+                .type("Bearer")
+                .token(jwt)
+                .build();
+    }
+
+    public List<String> mapStringRolesFromUserDetails(UserDetailsImpl userDetails) {
+        return userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
-        JwtResponse jwtResponse = new JwtResponse();
-        jwtResponse.setId(userDetails.getId());
-        jwtResponse.setUsername(userDetails.getUsername());
-        jwtResponse.setEmail(userDetails.getEmail());
-        jwtResponse.setRoles(roles);
-        jwtResponse.setType("Bearer");
-        jwtResponse.setToken(jwt);
-
-        return jwtResponse;
     }
 
     public UserFullDtoOut findById(Long id) {
@@ -99,14 +85,15 @@ public class UserService {
 
     @Transactional
     public void deleteById(Long id) {
-        if (!userRepository.findById(id).isPresent()) {
+        if (userRepository.findById(id).isEmpty()) {
             throw new NotFoundModelException(String.format("User with id = %s not found", id));
         }
         userRepository.deleteById(id);
     }
 
-    public List<ProductDtoForFindAll> userProducts(Long userId) {
-        List<ProductEntity> products = findUserByIdWhichWillReturnModel(userId).getProducts();
+    public List<ProductDtoForFindAll> userProducts(String authorization) {
+        Long userIdFromToken = getUserIdFromToken(authorization);
+        List<ProductEntity> products = findUserByIdWhichWillReturnModel(userIdFromToken).getProducts();
 
         return productMapper.mapListDtoForFindAllFromListEntity(products);
     }
@@ -141,9 +128,7 @@ public class UserService {
         var entity = userByName.orElseThrow(
                 () -> new NotFoundModelException(String.format("User with username = %s not found", email))
         );
-
         log.info("method findByName -  User with username = {} found", entity.getUsername());
-
         return entity;
     }
 
@@ -152,10 +137,16 @@ public class UserService {
                 () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
 
-    private void validateAlreadyExists(RegistrationForm dto, Long id) {
+    public Long getUserIdFromToken(String authorization) {
+        String token = authorization.substring(7);
+        String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
+        return Long.parseLong(userIdFromJWT);
+    }
+
+    private void validateAlreadyExists(RegistrationForm dto) {
         Optional<UserEntity> entity = userRepository.findByEmail(dto.getEmail());
 
-        if (entity.isPresent() && !entity.get().getId().equals(id)) {
+        if (entity.isPresent()) {
             throw new DuplicateException(String.format("User with email = %s already exist", dto.getEmail()));
         }
     }

@@ -25,7 +25,7 @@ public class OrganizationMapper {
     private final ShopRepository shopRepository;
     private final ProductMapper productMapper;
 
-    public OrganizationEntity mapEntityFromDto(OrganizationForSaveUpdateDto dto) {
+    public OrganizationEntity mapEntityFromDto(OrganizationForSaveUpdateDto dto, Long userId) {
         if (dto == null) {
             return null;
         }
@@ -35,7 +35,20 @@ public class OrganizationMapper {
                 .description(dto.getDescription())
                 .status(StatusOrganization.NOT_VALID)
                 .shop(findShopWhichWillReturnModel(dto.getShopId()))
-                .user(findUserByIdWhichWillReturnModel(dto.getUserId()))
+                .user(findUserByIdWhichWillReturnModel(userId))
+                .build();
+    }
+
+    public OrganizationEntity mapEntityFromDtoForUpdate(OrganizationForSaveUpdateDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        return OrganizationEntity.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .status(StatusOrganization.NOT_VALID)
+                .shop(findShopWhichWillReturnModel(dto.getShopId()))
                 .build();
     }
 

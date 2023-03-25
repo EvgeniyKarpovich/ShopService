@@ -25,11 +25,14 @@ public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final OrganizationMapper organizationMapper;
+    private final UserService userService;
 
     @Transactional
-    public void save(OrganizationForSaveUpdateDto dto) {
+    public void save(OrganizationForSaveUpdateDto dto, String authorization) {
+        var userIdFromToken = userService.getUserIdFromToken(authorization);
+
         validateAlreadyExists(dto, null);
-        var organization = organizationMapper.mapEntityFromDto(dto);
+        var organization = organizationMapper.mapEntityFromDto(dto, userIdFromToken);
 
         log.info("method save - Organization with name {} saved", organization.getName());
         organizationRepository.save(organization);
@@ -54,7 +57,7 @@ public class OrganizationService {
     public OrganizationDtoOut update(OrganizationForSaveUpdateDto dto, Long id) {
         validateAlreadyExists(dto, id);
 
-        var entity = organizationMapper.mapEntityFromDto(dto);
+        var entity = organizationMapper.mapEntityFromDtoForUpdate(dto);
         entity.setId(id);
         var updatedEntity = organizationRepository.save(entity);
 
@@ -88,10 +91,5 @@ public class OrganizationService {
         if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException(String.format("Organization with name = %s already exist", dto.getName()));
         }
-    }
-
-    public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {
-        return organizationRepository.findByName(name).orElseThrow(
-                () -> new NotFoundModelException("Organization with id = " + name + "not found"));
     }
 }

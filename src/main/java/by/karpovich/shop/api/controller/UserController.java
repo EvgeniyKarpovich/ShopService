@@ -4,7 +4,6 @@ import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
-import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
 
     @GetMapping("/{id}")
     public UserFullDtoOut findById(@PathVariable("id") Long id) {
@@ -41,10 +39,8 @@ public class UserController {
 
     @GetMapping("/products")
     public List<ProductDtoForFindAll> userProducts(@RequestHeader(value = "Authorization") String authorization) {
-        String token = authorization.substring(7);
-        String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
 
-        return userService.userProducts(Long.valueOf(userIdFromJWT));
+        return userService.userProducts(authorization);
     }
 
     @DeleteMapping("/{id}")

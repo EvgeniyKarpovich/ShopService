@@ -18,8 +18,9 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @PostMapping
-    private ResponseEntity<?> save(@Valid @RequestBody OrganizationForSaveUpdateDto dto) {
-        organizationService.save(dto);
+    private ResponseEntity<?> save(@RequestHeader(value = "Authorization") String authorization,
+                                   @Valid @RequestBody OrganizationForSaveUpdateDto dto) {
+        organizationService.save(dto, authorization);
 
         return new ResponseEntity<>("Organization saved successfully", HttpStatus.OK);
     }
@@ -30,8 +31,8 @@ public class OrganizationController {
     }
 
     @GetMapping("/{id}")
-    public OrganizationDtoOut findById(@PathVariable("id") Long id) {
-        return organizationService.findById(id);
+    public OrganizationDtoOut findById(@PathVariable("id") Long orgId) {
+        return organizationService.findById(orgId);
     }
 
     @DeleteMapping("/{id}")

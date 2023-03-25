@@ -56,10 +56,10 @@ public class CharacteristicService {
 
     @Transactional
     public void deleteById(Long id) {
-        if (characteristicRepository.findById(id).isPresent()) {
-            characteristicRepository.deleteById(id);
-        } else {
+        if (characteristicRepository.findById(id).isEmpty()) {
             throw new NotFoundModelException(String.format("characteristic with id = %s not found", id));
+        } else {
+            characteristicRepository.deleteById(id);
         }
         log.info("method deleteById - characteristic with id = {} deleted", id);
     }

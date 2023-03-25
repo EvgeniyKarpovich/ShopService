@@ -31,6 +31,7 @@ public class AdminService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
 
+    //Делаем продукт валидным , если он существует
     @Transactional
     public void doProductValid(Long productId) {
         if (productRepository.findById(productId).isPresent()) {
@@ -61,9 +62,11 @@ public class AdminService {
         }
     }
 
+    //Достаем айди все организацийй у которых статус равен NOT_VALID
     public List<Long> findNotValidOrganization() {
         return organizationRepository.findAll()
-                .stream().filter(status -> status.getStatus().equals(StatusOrganization.NOT_VALID))
+                .stream()
+                .filter(status -> status.getStatus().equals(StatusOrganization.NOT_VALID))
                 .map(OrganizationEntity::getId)
                 .collect(Collectors.toList());
     }

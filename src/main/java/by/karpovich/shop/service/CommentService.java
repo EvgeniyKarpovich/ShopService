@@ -26,6 +26,7 @@ public class CommentService {
     private final JwtUtils jwtUtils;
     private final ProductService productService;
 
+    //Оставляем отзыв у продукта , если польозователь не приобрел товар или уже оставлил отзыв то бросаем эксепшн
     @Transactional
     public CommentDtoOut save(CommentForSaveDto dto, String authorization) {
         String token = authorization.substring(7);
@@ -47,12 +48,11 @@ public class CommentService {
         }
 
         CommentEntity entity = commentMapper.mapEntityFromDto(dto, parseUserId);
-
         commentRepository.save(entity);
-
         return commentMapper.mapDtoFromEntity(commentRepository.save(entity));
     }
 
+    //достаем все отзывы у продукта по айди продукта
     public List<CommentDtoOut> findAllProductCommentsByUserId(Long productId) {
         return commentMapper.mapListDtoFromListEntity(commentRepository.findByProductId(productId));
     }

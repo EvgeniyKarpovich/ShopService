@@ -3,7 +3,6 @@ package by.karpovich.shop.api.controller;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
-import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.service.ProductService;
 import jakarta.validation.Valid;
@@ -20,7 +19,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final JwtUtils jwtUtils;
 
     @PostMapping
     public void save(@Valid @RequestBody ProductDtoForSave dto) {
@@ -36,19 +34,15 @@ public class ProductController {
     @PutMapping("/returns/{productId}")
     public void returnProduct(@RequestHeader(value = "Authorization") String authorization,
                               @PathVariable("productId") Long productId) {
-        String token = authorization.substring(7);
-        String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
 
-        productService.returnProduct(Long.valueOf(userIdFromJWT), productId);
+        productService.returnProduct(authorization, productId);
     }
 
     @PutMapping("/buy/{productId}")
     public void buy(@RequestHeader(value = "Authorization") String authorization,
                     @PathVariable("productId") Long productId) {
-        String token = authorization.substring(7);
-        String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
 
-        productService.buyProduct(Long.valueOf(userIdFromJWT), productId);
+        productService.buyProduct(authorization, productId);
     }
 
     @PutMapping("/discounts/{disId}/")

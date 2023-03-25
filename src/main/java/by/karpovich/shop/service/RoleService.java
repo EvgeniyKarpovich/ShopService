@@ -5,12 +5,16 @@ import by.karpovich.shop.exception.DuplicateException;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.RoleEntity;
 import by.karpovich.shop.jpa.repository.RoleRepository;
+import by.karpovich.shop.mapping.RoleMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -18,17 +22,13 @@ import java.util.*;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
     @Transactional
     public RoleEntity saveRole(RoleDto dto) {
         validateAlreadyExists(dto, null);
 
-        RoleEntity entity = new RoleEntity();
-
-        entity.setName(dto.getName());
-        roleRepository.save(entity);
-
-        return entity;
+        return roleRepository.save(roleMapper.mapEntityFromDto(dto));
     }
 
     public Set<RoleEntity> findRoleByName(String role) {
@@ -50,45 +50,27 @@ public class RoleService {
 
         log.info("method findById - Role found with id = {} ", role.getId());
 
-        RoleDto dto = new RoleDto();
-        dto.setId(role.getId());
-        dto.setName(role.getName());
-        return dto;
+        return roleMapper.mapDtoFromEntity(role);
     }
 
     public List<RoleDto> findAll() {
-        List<RoleEntity> rolesModel = roleRepository.findAll();
+        List<RoleEntity> entities = roleRepository.findAll();
 
-        log.info("method findAll - the number of roles found  = {} ", rolesModel.size());
+        log.info("method findAll - the number of roles found  = {} ", entities.size());
 
-        List<RoleDto> rolesDto = new ArrayList<>();
-
-        for (var model : rolesModel) {
-            RoleDto dto = new RoleDto();
-            dto.setId(model.getId());
-            dto.setName(model.getName());
-
-            rolesDto.add(dto);
-        }
-
-        return rolesDto;
+        return roleMapper.mapListDtoFromListEntity(entities);
     }
 
     @Transactional
     public RoleDto update(Long id, RoleDto dto) {
         validateAlreadyExists(dto, id);
 
-        var role = new RoleEntity();
-        role.setName(dto.getName());
-        role.setId(id);
-        var updated = roleRepository.save(role);
+        var entity = roleMapper.mapEntityFromDto(dto);
+        entity.setId(id);
+        var updated = roleRepository.save(entity);
 
         log.info("method update - Role {} updated", updated.getName());
-
-        RoleDto roleDto = new RoleDto();
-        roleDto.setId(updated.getId());
-        roleDto.setName(updated.getName());
-        return roleDto;
+        return roleMapper.mapDtoFromEntity(updated);
     }
 
     @Transactional
@@ -103,9 +85,9 @@ public class RoleService {
 
 
     private void validateAlreadyExists(RoleDto dto, Long id) {
-        Optional<RoleEntity> model = roleRepository.findByName(dto.getName());
+        Optional<RoleEntity> entity = roleRepository.findByName(dto.getName());
 
-        if (model.isPresent() && !model.get().getId().equals(id)) {
+        if (entity.isPresent() && !entity.get().getId().equals(id)) {
             throw new DuplicateException(String.format("Role with name = %s already exist", dto.getName()));
         }
     }

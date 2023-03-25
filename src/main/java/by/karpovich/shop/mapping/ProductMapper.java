@@ -68,12 +68,11 @@ public class ProductMapper {
         List<ProductDtoForFindAll> dtos = new ArrayList<>();
 
         for (ProductEntity entity : entities) {
-            ProductDtoForFindAll dto = new ProductDtoForFindAll();
-            dto.setName(entity.getName());
-            dto.setOrganizationName(entity.getOrganization().getName());
-            dto.setPrice(entity.getPrice());
-
-            dtos.add(dto);
+            dtos.add(ProductDtoForFindAll.builder()
+                    .name(entity.getName())
+                    .organizationName(entity.getOrganization().getName())
+                    .price(entity.getPrice())
+                    .build());
         }
 
         return dtos;

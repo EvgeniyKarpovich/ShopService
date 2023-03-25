@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public class Utils {
 
-    public static final String UPLOAD_PATH = "D://image//poster";
-    private static String dateFormat = "dd MMMM yyyy";
+    private static final String UPLOAD_PATH = "D://image//poster";
+    private static final String dateFormat = "dd MMMM yyyy";
 
     public static String mapStringFromInstant(Instant instant) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat)

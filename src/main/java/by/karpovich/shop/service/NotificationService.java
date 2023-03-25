@@ -2,8 +2,6 @@ package by.karpovich.shop.service;
 
 import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.notification.NotificationForSaveDto;
-import by.karpovich.shop.exception.NotFoundModelException;
-import by.karpovich.shop.jpa.entity.NotificationEntity;
 import by.karpovich.shop.jpa.repository.NotificationRepository;
 import by.karpovich.shop.mapping.NotificationMapper;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,7 +18,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
-    private  final UserService userService;
+    private final UserService userService;
 
     @Transactional
     public void save(NotificationForSaveDto dto) {
@@ -29,16 +26,10 @@ public class NotificationService {
         notificationRepository.save(entity);
     }
 
-    public List<NotificationDto> findAllNotification(Long userId) {
-        var userEntity = userService.findUserByIdWhichWillReturnModel(userId);
+    //Отображаем все уведомления конкретного пользователя
+    public List<NotificationDto> findAllNotification(String authorization) {
+        var userEntity = userService.findUserByIdWhichWillReturnModel(userService.getUserIdFromToken(authorization));
 
         return notificationMapper.mapListNotificationDtoFromListEntity(userEntity.getNotifications());
-    }
-
-    public NotificationEntity findNotificationByIdWhichWillReturnModel(Long id) {
-        Optional<NotificationEntity> model = notificationRepository.findById(id);
-
-        return model.orElseThrow(
-                () -> new NotFoundModelException("Notification with ID = " + id + " not found"));
     }
 }

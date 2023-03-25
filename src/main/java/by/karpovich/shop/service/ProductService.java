@@ -53,8 +53,12 @@ public class ProductService {
         }
     }
 
+    //Покупка продукта(товар должен быть валидным, баланс больше цены товара, кол-во на складе > 1,
+    // организаниця, которая продает товар должна быть валидной. С учетом наличия скидки)  (10% маржи идет магазину)
     @Transactional
-    public void buyProduct(Long userId, Long productId) {
+    public void buyProduct(String authorization, Long productId) {
+        Long userId = userService.getUserIdFromToken(authorization);
+
         var product = findProductByIdWhichWillReturnModel(productId);
         var user = userService.findUserByIdWhichWillReturnModel(userId);
         var organization = product.getOrganization();
@@ -88,7 +92,9 @@ public class ProductService {
     }
 
     @Transactional
-    public void returnProduct(Long userId, Long productId) {
+    public void returnProduct(String authorization, Long productId) {
+        Long userId = userService.getUserIdFromToken(authorization);
+
         var user = userService.findUserByIdWhichWillReturnModel(userId);
         var product = findProductById(user, productId);
         var shop = shopService.findById(product.getOrganization().getShop().getId());
@@ -118,6 +124,7 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundModelException("Product not found"));
     }
 
+    //Рассчитываем финальную стоимость товара
     private double calculateRefundAmount(ProductEntity entity) {
         Double productPrice = entity.getPrice();
         if (entity.getDiscount() != null) {
@@ -127,6 +134,7 @@ public class ProductService {
         return productPrice;
     }
 
+    //Отображаем только валидные продукты
     public List<ProductDtoForFindAll> findAll() {
         var entities = productRepository.findAll().stream()
                 .filter(product -> product.getIsValid().equals(true))

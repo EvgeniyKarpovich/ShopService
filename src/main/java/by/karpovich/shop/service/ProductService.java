@@ -156,7 +156,7 @@ public class ProductService {
 
     @Transactional
     public void deleteById(Long id) {
-        if (!productRepository.findById(id).isEmpty()) {
+        if (productRepository.findById(id).isPresent()) {
             throw new NotFoundModelException(String.format("Product with id = %s not found", id));
         }
         productRepository.deleteById(id);

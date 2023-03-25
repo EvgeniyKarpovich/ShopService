@@ -17,12 +17,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public CommentDtoOut save(@Valid @RequestBody CommentForSaveDto dto) {
-        return commentService.save(dto);
+    public CommentDtoOut save(@RequestHeader(value = "Authorization") String authorization,
+                              @Valid @RequestBody CommentForSaveDto dto) {
+        return commentService.save(dto, authorization);
     }
 
     @GetMapping("/products/{id}")
     public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
-        return commentService.findAllProductCommentsById(productId);
+        return commentService.findAllProductCommentsByUserId(productId);
     }
 }

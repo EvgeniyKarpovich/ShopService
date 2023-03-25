@@ -15,11 +15,18 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     Optional<ProductEntity> findByName(String name);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
+//    @Transactional
+    @Query("UPDATE ProductEntity p " +
+            " SET p.quantity = p.quantity - 1 " +
+            " WHERE p.id = :productId")
+    void decrementQuantityProduct(Long productId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE ProductEntity p " +
             " SET p.quantity = p.quantity - 1 " +
             " WHERE p.id = :productId")
-    void decrementQuantity(Long productId);
+    void incrementQuantity(Long productId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE ProductEntity p " +

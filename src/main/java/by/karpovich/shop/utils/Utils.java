@@ -1,7 +1,6 @@
 package by.karpovich.shop.utils;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -73,5 +72,4 @@ public class Utils {
 
         return Instant.parse(fullDate);
     }
-
 }

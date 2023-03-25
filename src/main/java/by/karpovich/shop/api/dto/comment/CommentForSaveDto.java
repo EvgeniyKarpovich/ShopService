@@ -22,6 +22,4 @@ public class CommentForSaveDto {
     private int rating;
 
     private Long productId;
-
-    private Long userId;
 }

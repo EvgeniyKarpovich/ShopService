@@ -22,16 +22,16 @@ public class CommentMapper {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    public CommentEntity mapEntityFromDto(CommentForSaveDto dto) {
+    public CommentEntity mapEntityFromDto(CommentForSaveDto dto, Long userId) {
         if (dto == null) {
             return null;
         }
 
         return CommentEntity.builder()
-                .sender(findUserByIdWhichWillReturnModel(dto.getUserId()).getUsername())
+                .sender(findUserByIdWhichWillReturnModel(userId).getUsername())
                 .message(dto.getMessage())
                 .rating(dto.getRating())
-                .user(findUserByIdWhichWillReturnModel(dto.getUserId()))
+                .user(findUserByIdWhichWillReturnModel(userId))
                 .product(findProductByIdWhichWillReturnModel(dto.getProductId()))
                 .build();
     }

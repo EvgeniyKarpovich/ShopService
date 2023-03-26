@@ -3,7 +3,6 @@ package by.karpovich.shop.api.controller;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
-import by.karpovich.shop.security.JwtUtils;
 import by.karpovich.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +64,6 @@ public class ProductController {
 
     @GetMapping
     public List<ProductDtoForFindAll> findAll() {
-        return productService.findAll();
+        return productService.findAllValidProducts();
     }
 }

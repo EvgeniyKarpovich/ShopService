@@ -138,12 +138,8 @@ public class ProductService {
     }
 
     //Отображаем только валидные продукты
-    public List<ProductDtoForFindAll> findAll() {
-        var entities = productRepository.findAll().stream()
-                .filter(product -> product.getIsValid().equals(true))
-                .toList();
-
-        return productMapper.mapListDtoForFindAllFromListEntity(entities);
+    public List<ProductDtoForFindAll> findAllValidProducts() {
+        return productMapper.mapListDtoForFindAllFromListEntity(productRepository.findAllValidProducts());
     }
 
     @Transactional

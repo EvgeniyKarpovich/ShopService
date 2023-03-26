@@ -45,6 +45,15 @@ public class DiscountService {
     }
 
     @Transactional
+    public void deleteById(Long id) {
+        if (discountRepository.findById(id).isEmpty()) {
+            throw new NotFoundModelException(String.format("Discount with id = %s not found", id));
+        } else {
+            discountRepository.deleteById(id);
+        }
+    }
+
+    @Transactional
     public DiscountDtoOut update(DiscountDto dto, Long id) {
         var entity = discountMapper.mapEntityFromDto(dto);
         entity.setId(id);

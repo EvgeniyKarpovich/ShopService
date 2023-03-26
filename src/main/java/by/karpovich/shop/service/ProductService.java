@@ -63,7 +63,7 @@ public class ProductService {
         var user = userService.findUserByIdWhichWillReturnModel(userId);
         var organization = product.getOrganization();
         var shop = shopService.findById(product.getOrganization().getShop().getId());
-        var productPrice = calculateRefundAmount(product);
+        var productPrice = calculateAmountWithDiscount(product);
 
         if (productPrice > user.getBalance()) {
             throw new NotEnoughMoneyException("Not enough money");
@@ -84,6 +84,7 @@ public class ProductService {
         organization.setMoney(organization.getMoney() + productPrice * 0.90);
         product.setDateOfPurchase(Instant.now());
         shop.setMoney(productPrice * 0.10);
+        product.setPriceWithDiscount(productPrice);
 
         shopRepository.save(shop);
         userRepository.save(user);
@@ -98,7 +99,7 @@ public class ProductService {
         var user = userService.findUserByIdWhichWillReturnModel(userId);
         var product = findProductById(user, productId);
         var shop = shopService.findById(product.getOrganization().getShop().getId());
-        var productPrice = calculateRefundAmount(product);
+        var productPrice = product.getPriceWithDiscount();
         var organization = product.getOrganization();
 
         if (product.getDateOfPurchase().plus(1, ChronoUnit.DAYS).isBefore(Instant.now())) {
@@ -119,15 +120,17 @@ public class ProductService {
 
     private ProductEntity findProductById(UserEntity user, Long productId) {
         return user.getProducts().stream()
-                .filter(p -> p.getId().equals(productId))
+                .filter(product -> product.getId().equals(productId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundModelException("Product not found"));
     }
 
     //Рассчитываем финальную стоимость товара
-    private double calculateRefundAmount(ProductEntity entity) {
+    private double calculateAmountWithDiscount(ProductEntity entity) {
         Double productPrice = entity.getPrice();
-        if (entity.getDiscount() != null) {
+        if (entity.getDiscount() != null
+                && Instant.now().isBefore(entity.getDiscount().getFinishDiscount())
+                && Instant.now().isAfter(entity.getDiscount().getStartDiscount())) {
             int discountPercentage = entity.getDiscount().getDiscountPercentage();
             productPrice = productPrice * discountPercentage / 100;
         }

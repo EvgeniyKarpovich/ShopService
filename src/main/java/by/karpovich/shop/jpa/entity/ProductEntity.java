@@ -37,6 +37,9 @@ public class ProductEntity {
     @Column(name = "price", nullable = false)
     private Double price;
 
+    @Column(name = "price_with_discount")
+    private Double priceWithDiscount;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 

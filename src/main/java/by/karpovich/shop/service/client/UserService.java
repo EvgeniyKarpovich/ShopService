@@ -1,6 +1,5 @@
 package by.karpovich.shop.service.client;
 
-
 import by.karpovich.shop.api.dto.authentification.JwtResponse;
 import by.karpovich.shop.api.dto.authentification.LoginForm;
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
@@ -22,13 +21,13 @@ public interface UserService {
 
     JwtResponse signIn(LoginForm loginForm);
 
-    UserEntity findByName(String userName);
+    UserEntity findUserByName(String userName);
 
-    UserFullDtoOut updateById(String token, UserForUpdate dto);
+    UserFullDtoOut updateUserById(String token, UserForUpdate dto);
 
-    void deleteById(String token);
+    void deleteUserById(String token);
 
-    List<ProductDtoForFindAll> userProducts(String authorization);
+    List<ProductDtoForFindAll> findUserProducts(String authorization);
 
     void buyProduct(String authorization, Long productId);
 

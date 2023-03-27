@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
 
-        UserEntity userByName = findByName(username);
+        UserEntity userByName = findUserByName(username);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String jwt = jwtUtils.generateToken(userByName.getUsername(), userByName.getId());
@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteById(String token) {
+    public void deleteUserById(String token) {
         Long userIdFromToken = getUserIdFromToken(token);
         if (userRepository.findById(userIdFromToken).isEmpty()) {
             throw new NotFoundModelException(String.format("User with id = %s not found", userIdFromToken));
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ProductDtoForFindAll> userProducts(String authorization) {
+    public List<ProductDtoForFindAll> findUserProducts(String authorization) {
         Long userIdFromToken = getUserIdFromToken(authorization);
         List<ProductEntity> products = findUserByIdWhichWillReturnModel(userIdFromToken).getProducts();
 
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserFullDtoOut updateById(String token, UserForUpdate dto) {
+    public UserFullDtoOut updateUserById(String token, UserForUpdate dto) {
         Long userIdFromToken = getUserIdFromToken(token);
 
         UserEntity user = userMapper.mapEntityFromUpdateDto(dto);
@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService {
                 () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
 
-    public UserEntity findByName(String username) {
+    public UserEntity findUserByName(String username) {
         Optional<UserEntity> userByName = userRepository.findByUsername(username);
 
         var entity = userByName.orElseThrow(

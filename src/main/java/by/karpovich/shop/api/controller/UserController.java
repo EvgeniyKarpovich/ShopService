@@ -48,19 +48,19 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody UserForUpdate dto,
                                     @PathVariable("id") String authorization) {
-        userService.updateById(authorization, dto);
+        userService.updateUserById(authorization, dto);
         return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
     }
 
     @GetMapping("/products")
     public List<ProductDtoForFindAll> userProducts(@RequestHeader(value = "Authorization") String authorization) {
 
-        return userService.userProducts(authorization);
+        return userService.findUserProducts(authorization);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") String authorization) {
-        userService.deleteById(authorization);
+        userService.deleteUserById(authorization);
 
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }

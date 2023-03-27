@@ -12,6 +12,7 @@ import by.karpovich.shop.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class CommentServiceImpl implements CommentService {
     private final ProductServiceImpl productService;
 
     @Override
-    public CommentDtoOut save(CommentForSaveDto dto, String authorization) {
+    @Transactional
+    public CommentDtoOut saveComment(CommentForSaveDto dto, String authorization) {
         String token = authorization.substring(7);
         String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
         long parseUserId = Long.parseLong(userIdFromJWT);

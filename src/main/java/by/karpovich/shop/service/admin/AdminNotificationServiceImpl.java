@@ -6,6 +6,7 @@ import by.karpovich.shop.mapping.NotificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -16,6 +17,7 @@ public class AdminNotificationServiceImpl implements AdminNotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
+    @Transactional
     public void sendNotificationsToUsers(NotificationDtoForSend notificationsDto) {
         notificationRepository.save(notificationMapper.mapEntityFromDto(notificationsDto));
     }

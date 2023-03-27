@@ -24,6 +24,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public void addBalance(Long userId, Double sum) {
         if (sum < 0) {
             throw new IncorrectAmountException("Sum must be more 0");

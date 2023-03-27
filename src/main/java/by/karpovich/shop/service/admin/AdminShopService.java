@@ -4,9 +4,9 @@ import by.karpovich.shop.jpa.entity.ShopEntity;
 
 public interface AdminShopService {
 
-    void save(ShopEntity shop);
+    void saveShop(ShopEntity shop);
 
-    void deleteById(Long shopId);
+    void deleteShopById(Long shopId);
 
-    ShopEntity findById(Long id);
+    ShopEntity findShopById(Long id);
 }

@@ -27,6 +27,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationMapper organizationMapper;
     private final UserServiceImpl userService;
 
+    @Override
     @Transactional
     public void saveOrganization(OrganizationForSaveUpdateDto dto, String authorization) {
         var userIdFromToken = userService.getUserIdFromToken(authorization);
@@ -38,6 +39,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organizationRepository.save(organization);
     }
 
+    @Override
     public OrganizationDtoOut findOrganizationById(Long id) {
         var entity = organizationRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("not found"));
@@ -46,6 +48,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationMapper.mapDtoOutFromEntity(entity);
     }
 
+    @Override
     public List<OrganizationDtoForFindAll> findAllOrganizations() {
         var organizationEntities = organizationRepository.findAll();
 
@@ -53,6 +56,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationMapper.mapListDtoForFindAllFromListEntity(organizationEntities);
     }
 
+    @Override
     @Transactional
     public OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto dto, Long id) {
         checkOrganizationForDuplicate(dto, id);
@@ -65,6 +69,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationMapper.mapDtoOutFromEntity(updatedEntity);
     }
 
+    @Override
     @Transactional
     public void deleteOrganizationById(Long id) {
         if (organizationRepository.findById(id).isPresent()) {
@@ -75,6 +80,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         log.info("method deleteById - organization with id = {} deleted", id);
     }
 
+    @Override
     @Transactional
     public void addLogoForOrganization(Long organizationId, MultipartFile file) {
         var entity = organizationRepository.findById(organizationId)

@@ -26,13 +26,13 @@ public class ProductController {
 
     @PostMapping
     public void save(@Valid @RequestBody ProductDtoForSave dto) {
-        productService.save(dto);
+        productService.saveProduct(dto);
     }
 
     @GetMapping("/{id}")
     public ProductDtoOut findById(@PathVariable("id") Long id) {
 
-        return productService.findById(id);
+        return productService.findProductById(id);
     }
 
     @GetMapping("/products/{id}")
@@ -42,7 +42,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long productId) {
-        productService.deleteById(productId);
+        productService.deleteProductById(productId);
 
         return new ResponseEntity<>("Product deleted", HttpStatus.OK);
     }

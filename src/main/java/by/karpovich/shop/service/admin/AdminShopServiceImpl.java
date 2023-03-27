@@ -6,6 +6,7 @@ import by.karpovich.shop.jpa.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -15,7 +16,8 @@ public class AdminShopServiceImpl implements AdminShopService {
     private final ShopRepository shopRepository;
 
     @Override
-    public void save(ShopEntity shop) {
+    @Transactional
+    public void saveShop(ShopEntity shop) {
         ShopEntity shopEntity = new ShopEntity();
         shopEntity.setName(shop.getName());
 
@@ -23,12 +25,13 @@ public class AdminShopServiceImpl implements AdminShopService {
     }
 
     @Override
-    public void deleteById(Long shopId) {
+    @Transactional
+    public void deleteShopById(Long shopId) {
         shopRepository.deleteById(shopId);
     }
 
     @Override
-    public ShopEntity findById(Long id) {
+    public ShopEntity findShopById(Long id) {
         return shopRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("Shop not found"));
     }

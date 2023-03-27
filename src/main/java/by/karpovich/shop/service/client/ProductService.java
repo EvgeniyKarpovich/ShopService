@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductDtoOut save(ProductDtoForSave dto);
+    ProductDtoOut saveProduct(ProductDtoForSave dto);
 
     List<ProductDtoForFindAll> findAllValidProducts();
 
-    void update(Long id, ProductDtoForSave dto);
+    void updateProductById(Long id, ProductDtoForSave dto);
 
-    void deleteById(Long id);
+    void deleteProductById(Long id);
 
-    ProductDtoOut findById(Long productId);
+    ProductDtoOut findProductById(Long productId);
 }

@@ -14,12 +14,12 @@ public class AdminShopController {
 
     @PostMapping
     public void save(@RequestBody ShopEntity entity) {
-        shopService.save(entity);
+        shopService.saveShop(entity);
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") Long id) {
-        shopService.deleteById(id);
+        shopService.deleteShopById(id);
     }
 
 }

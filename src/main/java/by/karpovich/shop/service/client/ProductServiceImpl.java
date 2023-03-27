@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDtoOut save(ProductDtoForSave dto) {
+    public ProductDtoOut saveProduct(ProductDtoForSave dto) {
         var entity = productMapper.mapEntityFromDto(dto);
         var savedEntity = productRepository.save(entity);
 
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void update(Long id, ProductDtoForSave dto) {
+    public void updateProductById(Long id, ProductDtoForSave dto) {
         ProductEntity entity = productMapper.mapEntityFromDto(dto);
         entity.setId(id);
         productRepository.save(entity);
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteProductById(Long id) {
         if (productRepository.findById(id).isPresent()) {
             throw new NotFoundModelException(String.format("Product with id = %s not found", id));
         }
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDtoOut findById(Long productId) {
+    public ProductDtoOut findProductById(Long productId) {
         return productMapper.mapDtoOutFromEntity(findProductByIdWhichWillReturnModel(productId));
     }
 

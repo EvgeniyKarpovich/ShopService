@@ -19,7 +19,7 @@ public class CharacteristicController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody CharacteristicDto dto) {
-        characteristicService.save(dto);
+        characteristicService.saveCharacteristic(dto);
 
         return new ResponseEntity<>("Characteristic saved successfully", HttpStatus.OK);
     }

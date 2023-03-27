@@ -22,22 +22,22 @@ public class AdminRolesController {
 
     @GetMapping("/{id}")
     public RoleDto findById(@PathVariable("id") Long id) {
-        return roleService.findById(id);
+        return roleService.findRoleById(id);
     }
 
     @GetMapping
     public List<RoleDto> findAll() {
-        return roleService.findAll();
+        return roleService.findRolesAll();
     }
 
     @PutMapping("/{id}")
     public RoleDto update(@RequestBody RoleDto dto,
                           @PathVariable("id") Long id) {
-        return roleService.update(id, dto);
+        return roleService.updateRoleById(id, dto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") Long id) {
-        roleService.deleteById(id);
+        roleService.deleteRoleById(id);
     }
 }

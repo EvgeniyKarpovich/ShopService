@@ -12,11 +12,11 @@ public interface AdminRoleService {
 
     Set<RoleEntity> findRoleByName(String role);
 
-    RoleDto findById(Long id);
+    RoleDto findRoleById(Long id);
 
-    List<RoleDto> findAll();
+    List<RoleDto> findRolesAll();
 
-    RoleDto update(Long id, RoleDto dto);
+    RoleDto updateRoleById(Long id, RoleDto dto);
 
-    void deleteById(Long id);
+    void deleteRoleById(Long id);
 }

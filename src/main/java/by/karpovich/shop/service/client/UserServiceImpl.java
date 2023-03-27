@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
         var product = productService.findProductByIdWhichWillReturnModel(productId);
         var user = findUserByIdWhichWillReturnModel(userId);
         var organization = product.getOrganization();
-        var shop = shopService.findById(product.getOrganization().getShop().getId());
+        var shop = shopService.findShopById(product.getOrganization().getShop().getId());
         var productPrice = calculateAmountWithDiscount(product);
 
         if (productPrice > user.getBalance()) {
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
         var user = findUserByIdWhichWillReturnModel(userId);
         var product = findProductById(user, productId);
-        var shop = shopService.findById(product.getOrganization().getShop().getId());
+        var shop = shopService.findShopById(product.getOrganization().getShop().getId());
         var productPrice = product.getPriceWithDiscount();
         var organization = product.getOrganization();
 

@@ -17,6 +17,6 @@ public class CommentController {
     @PostMapping
     public CommentDtoOut save(@RequestHeader(value = "Authorization") String authorization,
                               @Valid @RequestBody CommentForSaveDto dto) {
-        return commentService.save(dto, authorization);
+        return commentService.saveComment(dto, authorization);
     }
 }

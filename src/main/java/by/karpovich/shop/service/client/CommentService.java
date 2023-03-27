@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    CommentDtoOut save(CommentForSaveDto dto, String authorization);
+    CommentDtoOut saveComment(CommentForSaveDto dto, String authorization);
 
     List<CommentDtoOut> findAllProductCommentsByUserId(Long productId);
 }

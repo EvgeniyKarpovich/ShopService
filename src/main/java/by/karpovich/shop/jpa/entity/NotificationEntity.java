@@ -1,6 +1,5 @@
 package by.karpovich.shop.jpa.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,8 +27,10 @@ public class NotificationEntity {
     @Column(name = "name")
     private String name;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "notifications", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "users_notifications",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "notification_id"))
     private List<UserEntity> users = new ArrayList<>();
 
     @Column(name = "message")

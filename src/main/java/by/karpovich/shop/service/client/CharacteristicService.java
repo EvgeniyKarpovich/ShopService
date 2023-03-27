@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface CharacteristicService {
 
-    CharacteristicDto save(CharacteristicDto dto);
+    CharacteristicDto saveCharacteristic(CharacteristicDto dto);
 
-    CharacteristicDto findById(Long id);
+    CharacteristicDto findCharacteristicById(Long id);
 
-    List<CharacteristicDto> findAll();
+    List<CharacteristicDto> findAllCharacteristics();
 
-    CharacteristicDto update(Long id, CharacteristicDto dto);
+    CharacteristicDto updateCharacteristicsById(Long id, CharacteristicDto dto);
 
-    void deleteById(Long id);
+    void deleteCharacteristicById(Long id);
 
     CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id);
 }

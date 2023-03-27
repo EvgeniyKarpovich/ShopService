@@ -46,7 +46,7 @@ public class AdminRoleServiceImpl implements AdminRoleService {
     }
 
     @Override
-    public RoleDto findById(Long id) {
+    public RoleDto findRoleById(Long id) {
         Optional<RoleEntity> model = roleRepository.findById(id);
         var role = model.orElseThrow(
                 () -> new NotFoundModelException(String.format("Role with id = %s not found", id)));
@@ -57,7 +57,7 @@ public class AdminRoleServiceImpl implements AdminRoleService {
     }
 
     @Override
-    public List<RoleDto> findAll() {
+    public List<RoleDto> findRolesAll() {
         List<RoleEntity> entities = roleRepository.findAll();
 
         log.info("method findAll - the number of roles found  = {} ", entities.size());
@@ -66,7 +66,7 @@ public class AdminRoleServiceImpl implements AdminRoleService {
     }
 
     @Override
-    public RoleDto update(Long id, RoleDto dto) {
+    public RoleDto updateRoleById(Long id, RoleDto dto) {
         validateAlreadyExists(dto, id);
 
         var entity = roleMapper.mapEntityFromDto(dto);
@@ -78,7 +78,7 @@ public class AdminRoleServiceImpl implements AdminRoleService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteRoleById(Long id) {
         if (roleRepository.findById(id).isPresent()) {
             roleRepository.deleteById(id);
         } else {

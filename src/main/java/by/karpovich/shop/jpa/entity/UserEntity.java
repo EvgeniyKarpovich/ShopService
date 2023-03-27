@@ -61,10 +61,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_notifications",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "notification_id"))
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<NotificationEntity> notifications = new ArrayList<>();
 
     @CreatedDate

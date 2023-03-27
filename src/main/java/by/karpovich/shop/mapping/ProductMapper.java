@@ -65,17 +65,17 @@ public class ProductMapper {
             return null;
         }
 
-        List<ProductDtoForFindAll> dtos = new ArrayList<>();
+        List<ProductDtoForFindAll> dtoProducts = new ArrayList<>();
 
         for (ProductEntity entity : entities) {
-            dtos.add(ProductDtoForFindAll.builder()
+            dtoProducts.add(ProductDtoForFindAll.builder()
                     .name(entity.getName())
                     .organizationName(entity.getOrganization().getName())
                     .price(entity.getPrice())
                     .build());
         }
 
-        return dtos;
+        return dtoProducts;
     }
 
     public String getSumRatingFromProductComments(ProductEntity entity) {

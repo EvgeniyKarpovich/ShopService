@@ -8,6 +8,7 @@ import by.karpovich.shop.mapping.CharacteristicMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     private final CharacteristicMapper characteristicMapper;
 
     @Override
-    public CharacteristicDto save(CharacteristicDto dto) {
+    @Transactional
+    public CharacteristicDto saveCharacteristic(CharacteristicDto dto) {
         var entity = characteristicMapper.mapEntityFromDto(dto);
         var savedEntity = characteristicRepository.save(entity);
 
@@ -30,7 +32,7 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     }
 
     @Override
-    public CharacteristicDto findById(Long id) {
+    public CharacteristicDto findCharacteristicById(Long id) {
         var entity = characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("characteristic with id = %s not found", id)));
 
@@ -39,7 +41,7 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     }
 
     @Override
-    public List<CharacteristicDto> findAll() {
+    public List<CharacteristicDto> findAllCharacteristics() {
         var entities = characteristicRepository.findAll();
 
         log.info("method findAll - characteristic found  = {} ", entities.size());
@@ -47,7 +49,8 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     }
 
     @Override
-    public CharacteristicDto update(Long id, CharacteristicDto dto) {
+    @Transactional
+    public CharacteristicDto updateCharacteristicsById(Long id, CharacteristicDto dto) {
         var entity = characteristicMapper.mapEntityFromDto(dto);
         entity.setId(id);
         var updatedEntity = characteristicRepository.save(entity);
@@ -57,7 +60,8 @@ public class CharacteristicServiceImpl implements CharacteristicService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    @Transactional
+    public void deleteCharacteristicById(Long id) {
         if (characteristicRepository.findById(id).isEmpty()) {
             throw new NotFoundModelException(String.format("characteristic with id = %s not found", id));
         } else {

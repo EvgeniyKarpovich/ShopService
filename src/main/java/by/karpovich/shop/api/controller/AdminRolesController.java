@@ -2,18 +2,18 @@ package by.karpovich.shop.api.controller;
 
 import by.karpovich.shop.api.dto.role.RoleDto;
 import by.karpovich.shop.jpa.entity.RoleEntity;
-import by.karpovich.shop.service.RoleService;
+import by.karpovich.shop.service.admin.AdminRoleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/admins/roles")
 @RequiredArgsConstructor
-public class RoleController {
+public class AdminRolesController {
 
-    private final RoleService roleService;
+    private final AdminRoleServiceImpl roleService;
 
     @PostMapping
     public RoleEntity save(@RequestBody RoleDto dto) {

@@ -1,7 +1,7 @@
 package by.karpovich.shop.api.controller;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
-import by.karpovich.shop.service.CharacteristicService;
+import by.karpovich.shop.service.client.CharacteristicServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CharacteristicController {
 
-    private final CharacteristicService characteristicService;
+    private final CharacteristicServiceImpl characteristicService;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody CharacteristicDto dto) {

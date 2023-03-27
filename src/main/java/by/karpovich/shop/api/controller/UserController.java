@@ -1,10 +1,10 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
-import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
-import by.karpovich.shop.service.UserService;
+import by.karpovich.shop.service.client.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,22 +18,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    @GetMapping("/{id}")
-    public UserFullDtoOut findById(@PathVariable("id") Long id) {
-        return userService.findById(id);
+    @PutMapping("/returns/{productId}")
+    public void returnProduct(@RequestHeader(value = "Authorization") String authorization,
+                              @PathVariable("productId") Long productId) {
+
+        userService.returnProduct(authorization, productId);
+    }
+
+    @PutMapping("/buy/{productId}")
+    public void buy(@RequestHeader(value = "Authorization") String authorization,
+                    @PathVariable("productId") Long productId) {
+
+        userService.buyProduct(authorization, productId);
+    }
+
+    @GetMapping("/notifications")
+    public List<NotificationDto> findAllNotification(@RequestHeader(value = "Authorization") String authorization) {
+
+        return userService.findAllUserNotifications(authorization);
     }
 
     @GetMapping
-    public List<UserDtoForFindAll> findAll() {
-        return userService.findAll();
+    public UserFullDtoOut findById(@RequestHeader(value = "Authorization") String authorization) {
+        return userService.findUserById(authorization);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody UserForUpdate dto,
-                                    @PathVariable("id") Long id) {
-        userService.update(id, dto);
+                                    @PathVariable("id") String authorization) {
+        userService.updateById(authorization, dto);
         return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
     }
 
@@ -44,8 +59,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
-        userService.deleteById(id);
+    public ResponseEntity<?> deleteById(@PathVariable("id") String authorization) {
+        userService.deleteById(authorization);
 
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }

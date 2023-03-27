@@ -1,4 +1,4 @@
-package by.karpovich.shop.service;
+package by.karpovich.shop.service.admin;
 
 import by.karpovich.shop.api.dto.role.RoleDto;
 import by.karpovich.shop.exception.DuplicateException;
@@ -19,11 +19,12 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RoleService {
+public class AdminRoleServiceImpl implements AdminRoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
+    @Override
     @Transactional
     public RoleEntity saveRole(RoleDto dto) {
         validateAlreadyExists(dto, null);
@@ -31,6 +32,7 @@ public class RoleService {
         return roleRepository.save(roleMapper.mapEntityFromDto(dto));
     }
 
+    @Override
     public Set<RoleEntity> findRoleByName(String role) {
         Optional<RoleEntity> entity = roleRepository.findByName(role);
 
@@ -43,6 +45,7 @@ public class RoleService {
         return userRoles;
     }
 
+    @Override
     public RoleDto findById(Long id) {
         Optional<RoleEntity> model = roleRepository.findById(id);
         var role = model.orElseThrow(
@@ -53,6 +56,7 @@ public class RoleService {
         return roleMapper.mapDtoFromEntity(role);
     }
 
+    @Override
     public List<RoleDto> findAll() {
         List<RoleEntity> entities = roleRepository.findAll();
 
@@ -61,7 +65,7 @@ public class RoleService {
         return roleMapper.mapListDtoFromListEntity(entities);
     }
 
-    @Transactional
+    @Override
     public RoleDto update(Long id, RoleDto dto) {
         validateAlreadyExists(dto, id);
 
@@ -73,7 +77,7 @@ public class RoleService {
         return roleMapper.mapDtoFromEntity(updated);
     }
 
-    @Transactional
+    @Override
     public void deleteById(Long id) {
         if (roleRepository.findById(id).isPresent()) {
             roleRepository.deleteById(id);
@@ -82,7 +86,6 @@ public class RoleService {
         }
         log.info("method deleteById - Role with id = {} deleted", id);
     }
-
 
     private void validateAlreadyExists(RoleDto dto, Long id) {
         Optional<RoleEntity> entity = roleRepository.findByName(dto.getName());

@@ -1,4 +1,5 @@
-package by.karpovich.shop.service;
+package by.karpovich.shop.service.client;
+
 
 import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.comment.CommentForSaveDto;
@@ -11,23 +12,21 @@ import by.karpovich.shop.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final JwtUtils jwtUtils;
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
-    //Оставляем отзыв у продукта , если польозователь не приобрел товар или уже оставлил отзыв то бросаем эксепшн
-    @Transactional
+    @Override
     public CommentDtoOut save(CommentForSaveDto dto, String authorization) {
         String token = authorization.substring(7);
         String userIdFromJWT = jwtUtils.getUserIdFromJWT(token);
@@ -52,7 +51,7 @@ public class CommentService {
         return commentMapper.mapDtoFromEntity(commentRepository.save(entity));
     }
 
-    //достаем все отзывы у продукта по айди продукта
+    @Override
     public List<CommentDtoOut> findAllProductCommentsByUserId(Long productId) {
         return commentMapper.mapListDtoFromListEntity(commentRepository.findByProductId(productId));
     }

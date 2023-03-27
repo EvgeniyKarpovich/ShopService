@@ -3,8 +3,7 @@ package by.karpovich.shop.api.controller;
 import by.karpovich.shop.api.dto.authentification.JwtResponse;
 import by.karpovich.shop.api.dto.authentification.LoginForm;
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
-import by.karpovich.shop.jpa.repository.UserRepository;
-import by.karpovich.shop.service.UserService;
+import by.karpovich.shop.service.client.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -22,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @PostMapping("/signin")
     public JwtResponse authenticateUser(@Valid @RequestBody LoginForm loginForm) {

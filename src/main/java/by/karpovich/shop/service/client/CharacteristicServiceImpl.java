@@ -1,4 +1,4 @@
-package by.karpovich.shop.service;
+package by.karpovich.shop.service.client;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
 import by.karpovich.shop.exception.NotFoundModelException;
@@ -8,19 +8,19 @@ import by.karpovich.shop.mapping.CharacteristicMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CharacteristicService {
+public class CharacteristicServiceImpl implements CharacteristicService {
+
 
     private final CharacteristicRepository characteristicRepository;
     private final CharacteristicMapper characteristicMapper;
 
-    @Transactional
+    @Override
     public CharacteristicDto save(CharacteristicDto dto) {
         var entity = characteristicMapper.mapEntityFromDto(dto);
         var savedEntity = characteristicRepository.save(entity);
@@ -29,6 +29,7 @@ public class CharacteristicService {
         return characteristicMapper.mapDtoFromEntity(savedEntity);
     }
 
+    @Override
     public CharacteristicDto findById(Long id) {
         var entity = characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("characteristic with id = %s not found", id)));
@@ -37,6 +38,7 @@ public class CharacteristicService {
         return characteristicMapper.mapDtoFromEntity(entity);
     }
 
+    @Override
     public List<CharacteristicDto> findAll() {
         var entities = characteristicRepository.findAll();
 
@@ -44,7 +46,7 @@ public class CharacteristicService {
         return characteristicMapper.mapListDtoFromListEntity(entities);
     }
 
-    @Transactional
+    @Override
     public CharacteristicDto update(Long id, CharacteristicDto dto) {
         var entity = characteristicMapper.mapEntityFromDto(dto);
         entity.setId(id);
@@ -54,7 +56,7 @@ public class CharacteristicService {
         return characteristicMapper.mapDtoFromEntity(updatedEntity);
     }
 
-    @Transactional
+    @Override
     public void deleteById(Long id) {
         if (characteristicRepository.findById(id).isEmpty()) {
             throw new NotFoundModelException(String.format("characteristic with id = %s not found", id));
@@ -64,6 +66,7 @@ public class CharacteristicService {
         log.info("method deleteById - characteristic with id = {} deleted", id);
     }
 
+    @Override
     public CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id) {
         return characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("Characteristic with id = " + id + "not found"));

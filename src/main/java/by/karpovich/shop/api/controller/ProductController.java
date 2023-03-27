@@ -1,9 +1,12 @@
 package by.karpovich.shop.api.controller;
 
+import by.karpovich.shop.api.dto.comment.CommentDtoOut;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
-import by.karpovich.shop.service.ProductService;
+import by.karpovich.shop.service.client.CommentServiceImpl;
+import by.karpovich.shop.service.client.ProductServiceImpl;
+import by.karpovich.shop.service.client.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+    private final CommentServiceImpl commentService;
+    private final ProductServiceImpl productService;
+    private final UserServiceImpl userService;
 
     @PostMapping
     public void save(@Valid @RequestBody ProductDtoForSave dto) {
@@ -30,29 +35,9 @@ public class ProductController {
         return productService.findById(id);
     }
 
-    @PutMapping("/returns/{productId}")
-    public void returnProduct(@RequestHeader(value = "Authorization") String authorization,
-                              @PathVariable("productId") Long productId) {
-
-        productService.returnProduct(authorization, productId);
-    }
-
-    @PutMapping("/buy/{productId}")
-    public void buy(@RequestHeader(value = "Authorization") String authorization,
-                    @PathVariable("productId") Long productId) {
-
-        productService.buyProduct(authorization, productId);
-    }
-
-    @PutMapping("/discounts/{disId}/")
-    public void addDiscount(@PathVariable("disId") Long disId, @RequestParam("productsId") List<Long> productsId) {
-        productService.addDiscount(productsId, disId);
-    }
-
-    @PutMapping("/discounts/remove/{discountId}")
-    public void deleteDiscountFromProducts(@PathVariable("discountId") Long discountId,
-                                           @RequestParam("productsId") List<Long> productsId) {
-        productService.deleteDiscountFromProducts(productsId, discountId);
+    @GetMapping("/products/{id}")
+    public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
+        return commentService.findAllProductCommentsByUserId(productId);
     }
 
     @DeleteMapping("/{id}")

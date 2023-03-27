@@ -1,9 +1,11 @@
 package by.karpovich.shop.mapping;
 
 import by.karpovich.shop.api.dto.notification.NotificationDto;
-import by.karpovich.shop.api.dto.notification.NotificationForSaveDto;
+import by.karpovich.shop.api.dto.notification.NotificationDtoForSend;
+import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.NotificationEntity;
-import by.karpovich.shop.service.UserService;
+import by.karpovich.shop.jpa.entity.UserEntity;
+import by.karpovich.shop.jpa.repository.UserRepository;
 import by.karpovich.shop.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,17 +17,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationMapper {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public NotificationEntity mapEntityFromDto(NotificationForSaveDto dto) {
+    public NotificationEntity mapEntityFromDto(NotificationDtoForSend dto) {
         if (dto == null) {
             return null;
         }
 
+        List<UserEntity> users = dto.getUsersId().stream().map(this::findUserByIdWhichWillReturnModel).toList();
+
         return NotificationEntity.builder()
                 .name(dto.getName())
                 .message(dto.getMessage())
-                .user(userService.findUserByIdWhichWillReturnModel(dto.getUserId()))
+                .users(users)
                 .build();
     }
 
@@ -54,5 +58,10 @@ public class NotificationMapper {
         }
 
         return dtos;
+    }
+
+    public UserEntity findUserByIdWhichWillReturnModel(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundModelException("User with id = " + id + "not found"));
     }
 }

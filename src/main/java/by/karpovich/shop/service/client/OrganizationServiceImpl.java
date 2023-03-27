@@ -1,4 +1,4 @@
-package by.karpovich.shop.service;
+package by.karpovich.shop.service.client;
 
 import by.karpovich.shop.api.dto.organization.OrganizationDtoForFindAll;
 import by.karpovich.shop.api.dto.organization.OrganizationDtoOut;
@@ -21,24 +21,24 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrganizationService {
+public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final OrganizationMapper organizationMapper;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Transactional
-    public void save(OrganizationForSaveUpdateDto dto, String authorization) {
+    public void saveOrganization(OrganizationForSaveUpdateDto dto, String authorization) {
         var userIdFromToken = userService.getUserIdFromToken(authorization);
 
-        validateAlreadyExists(dto, null);
+        checkOrganizationForDuplicate(dto, null);
         var organization = organizationMapper.mapEntityFromDto(dto, userIdFromToken);
 
         log.info("method save - Organization with name {} saved", organization.getName());
         organizationRepository.save(organization);
     }
 
-    public OrganizationDtoOut findById(Long id) {
+    public OrganizationDtoOut findOrganizationById(Long id) {
         var entity = organizationRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("not found"));
 
@@ -46,7 +46,7 @@ public class OrganizationService {
         return organizationMapper.mapDtoOutFromEntity(entity);
     }
 
-    public List<OrganizationDtoForFindAll> findAll() {
+    public List<OrganizationDtoForFindAll> findAllOrganizations() {
         var organizationEntities = organizationRepository.findAll();
 
         log.info("method findAll - organizations found  = {} ", organizationEntities.size());
@@ -54,8 +54,8 @@ public class OrganizationService {
     }
 
     @Transactional
-    public OrganizationDtoOut update(OrganizationForSaveUpdateDto dto, Long id) {
-        validateAlreadyExists(dto, id);
+    public OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto dto, Long id) {
+        checkOrganizationForDuplicate(dto, id);
 
         var entity = organizationMapper.mapEntityFromDtoForUpdate(dto);
         entity.setId(id);
@@ -66,7 +66,7 @@ public class OrganizationService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteOrganizationById(Long id) {
         if (organizationRepository.findById(id).isPresent()) {
             organizationRepository.deleteById(id);
         } else {
@@ -76,7 +76,7 @@ public class OrganizationService {
     }
 
     @Transactional
-    public void addLogo(Long organizationId, MultipartFile file) {
+    public void addLogoForOrganization(Long organizationId, MultipartFile file) {
         var entity = organizationRepository.findById(organizationId)
                 .orElseThrow(
                         () -> new NotFoundModelException("not found"));
@@ -85,7 +85,7 @@ public class OrganizationService {
         organizationRepository.save(entity);
     }
 
-    private void validateAlreadyExists(OrganizationForSaveUpdateDto dto, Long id) {
+    private void checkOrganizationForDuplicate(OrganizationForSaveUpdateDto dto, Long id) {
         Optional<OrganizationEntity> entity = organizationRepository.findByName(dto.getName());
 
         if (entity.isPresent() && !entity.get().getId().equals(id)) {

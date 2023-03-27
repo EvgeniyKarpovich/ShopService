@@ -2,11 +2,12 @@ package by.karpovich.shop.mapping;
 
 import by.karpovich.shop.api.dto.authentification.RegistrationForm;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
+import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
 import by.karpovich.shop.jpa.entity.RoleEntity;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.jpa.entity.UserEntity;
-import by.karpovich.shop.service.RoleService;
+import by.karpovich.shop.service.admin.AdminRoleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class UserMapper {
 
     private static final String ROLE_USER = "ROLE_USER";
     private final BCryptPasswordEncoder passwordEncoder;
-    private final RoleService roleService;
+    private final AdminRoleServiceImpl roleService;
 
     public UserEntity mapEntityFromDtoForRegForm(RegistrationForm dto) {
         if (dto == null) {
@@ -55,6 +56,17 @@ public class UserMapper {
         return entity.getRoles().stream()
                 .map(RoleEntity::getName)
                 .collect(Collectors.toList());
+    }
+
+    public UserEntity mapEntityFromUpdateDto(UserForUpdate dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        return UserEntity.builder()
+                .username(dto.getUsername())
+                .email(dto.getEmail())
+                .build();
     }
 
     public List<UserDtoForFindAll> mapListUserDtoForFindAllFromListModel(List<UserEntity> users) {

@@ -66,10 +66,4 @@ public class Utils {
         }
         return media;
     }
-
-    public static Instant mapInstantFromString(String date) {
-        String fullDate = date + "T00:00:00.000+00:00";
-
-        return Instant.parse(fullDate);
-    }
 }

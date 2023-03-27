@@ -6,9 +6,10 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.userdetails.User;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,10 +28,9 @@ public class NotificationEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private UserEntity user;
+    @ManyToMany(mappedBy = "notifications", fetch = FetchType.LAZY)
+    private List<UserEntity> users = new ArrayList<>();
 
     @Column(name = "message")
     private String message;

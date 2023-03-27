@@ -1,16 +1,16 @@
 package by.karpovich.shop.api.controller;
 
 import by.karpovich.shop.jpa.entity.ShopEntity;
-import by.karpovich.shop.service.ShopService;
+import by.karpovich.shop.service.admin.AdminShopServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/shops")
+@RequestMapping("/admins/shops")
 @RequiredArgsConstructor
-public class ShopController {
+public class AdminShopController {
 
-    private final ShopService shopService;
+    private final AdminShopServiceImpl shopService;
 
     @PostMapping
     public void save(@RequestBody ShopEntity entity) {

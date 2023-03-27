@@ -8,7 +8,7 @@ import by.karpovich.shop.jpa.entity.CommentEntity;
 import by.karpovich.shop.jpa.entity.OrganizationEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
-import by.karpovich.shop.service.CharacteristicService;
+import by.karpovich.shop.service.client.CharacteristicServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class ProductMapper {
 
     private final CharacteristicMapper characteristicMapper;
-    private final CharacteristicService characteristicService;
+    private final CharacteristicServiceImpl characteristicService;
     private final OrganizationRepository organizationRepository;
     private final DiscountMapper discountMapper;
     private final CommentMapper commentMapper;
@@ -79,7 +79,7 @@ public class ProductMapper {
     }
 
     public String getSumRatingFromProductComments(ProductEntity entity) {
-        if (entity.getComments() == null) {
+        if (entity.getComments().isEmpty()) {
             return "No ratings";
         }
         Integer sum = entity.getComments().stream()

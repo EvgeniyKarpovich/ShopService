@@ -28,7 +28,7 @@ public class AdminDiscountController {
         adminDiscountService.deleteDiscountFromProducts(productsId, discountId);
     }
 
-    @PostMapping
+    @PostMapping("/discounts")
     private ResponseEntity<?> save(@Valid @RequestBody DiscountDto dto) {
         adminDiscountService.saveDiscount(dto);
 

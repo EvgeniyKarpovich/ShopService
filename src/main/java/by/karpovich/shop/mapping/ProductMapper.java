@@ -81,12 +81,13 @@ public class ProductMapper {
     public String getSumRatingFromProductComments(ProductEntity entity) {
         if (entity.getComments().isEmpty()) {
             return "No ratings";
-        }
-        Integer sum = entity.getComments().stream()
-                .map(CommentEntity::getRating)
-                .reduce(0, Integer::sum);
+        } else {
+            Integer sum = entity.getComments().stream()
+                    .map(CommentEntity::getRating)
+                    .reduce(0, Integer::sum);
 
-        return String.valueOf(sum / entity.getComments().size());
+            return String.valueOf(sum / entity.getComments().size());
+        }
     }
 
     public OrganizationEntity findOrgByNameWhichWillReturnModel(String name) {

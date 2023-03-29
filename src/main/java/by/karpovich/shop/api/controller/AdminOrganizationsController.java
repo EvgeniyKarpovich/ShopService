@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admins")
+@RequestMapping("/admins/organizations")
 @RequiredArgsConstructor
 public class AdminOrganizationsController {
 
     private final AdminOrganizationServiceImpl adminOrganizationService;
 
-    @PutMapping("/statuses/org/frozen/{id}/{status}")
+    @PutMapping("/statuses/frozen/{id}/{status}")
     public void setFrozenStatusOrg(@PathVariable("id") Long id, @PathVariable("status") StatusOrganization status) {
         adminOrganizationService.setOrganizationStatus(id, StatusOrganization.FROZEN);
     }
 
-    @PutMapping("/statuses/org/deleted/{id}/{status}")
+    @PutMapping("/statuses/deleted/{id}/{status}")
     public void setDeletedStatusOrg(@PathVariable("id") Long id, @PathVariable("status") StatusOrganization status) {
         adminOrganizationService.setOrganizationStatus(id, StatusOrganization.DELETED);
     }
 
-    @PutMapping("/statuses/org/active/{id}/{status}")
+    @PutMapping("/statuses/active/{id}/{status}")
     public void setActiveStatusOrg(@PathVariable("id") Long id, @PathVariable("status") StatusOrganization status) {
         adminOrganizationService.setOrganizationStatus(id, StatusOrganization.ACTIVE);
     }

@@ -33,7 +33,7 @@ public class ProductController {
         return productService.findProductById(id);
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/comments/{id}")
     public List<CommentDtoOut> findAllProductCommentsById(@PathVariable("id") Long productId) {
         return commentService.findAllProductCommentsByUserId(productId);
     }

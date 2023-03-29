@@ -31,17 +31,17 @@ public class AdminUsersController {
         adminUserService.addBalance(userId, sum);
     }
 
-    @PutMapping("/statuses/user/frozen/{id}/{status}")
+    @PutMapping("/statuses/frozen/{id}/{status}")
     public void setFrozenStatusUser(@PathVariable("id") Long id, @PathVariable("status") StatusUser status) {
         adminUserService.setUserStatus(id, StatusUser.FROZEN);
     }
 
-    @PutMapping("/statuses/user/deleted/{id}/{status}")
+    @PutMapping("/statuses/deleted/{id}/{status}")
     public void setDeletedStatusUser(@PathVariable("id") Long id, @PathVariable("status") StatusUser status) {
         adminUserService.setUserStatus(id, StatusUser.DELETED);
     }
 
-    @PutMapping("/statuses/user/active/{id}/{status}")
+    @PutMapping("/statuses/active/{id}/{status}")
     public void setActiveStatusUser(@PathVariable("id") Long id, @PathVariable("status") StatusUser status) {
         adminUserService.setUserStatus(id, StatusUser.ACTIVE);
     }

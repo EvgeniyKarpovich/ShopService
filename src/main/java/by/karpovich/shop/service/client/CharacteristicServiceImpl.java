@@ -17,43 +17,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CharacteristicServiceImpl implements CharacteristicService {
 
-
     private final CharacteristicRepository characteristicRepository;
     private final CharacteristicMapper characteristicMapper;
 
     @Override
     @Transactional
     public CharacteristicDto saveCharacteristic(CharacteristicDto dto) {
-        var entity = characteristicMapper.mapEntityFromDto(dto);
-        var savedEntity = characteristicRepository.save(entity);
+        var characteristic = characteristicMapper.mapEntityFromDto(dto);
+        var savedCharacteristic = characteristicRepository.save(characteristic);
 
-        log.info("method save - characteristic with id = {} saved", savedEntity.getId());
-        return characteristicMapper.mapDtoFromEntity(savedEntity);
+        log.info("method save - characteristic with id = {} saved", savedCharacteristic.getId());
+        return characteristicMapper.mapDtoFromEntity(savedCharacteristic);
     }
 
     @Override
     public CharacteristicDto findCharacteristicById(Long id) {
-        var entity = characteristicRepository.findById(id).orElseThrow(
+        var characteristic = characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("characteristic with id = %s not found", id)));
 
-        log.info("method findById - characteristic found with id = {} ", entity.getId());
-        return characteristicMapper.mapDtoFromEntity(entity);
+        log.info("method findById - characteristic found with id = {} ", characteristic.getId());
+        return characteristicMapper.mapDtoFromEntity(characteristic);
     }
 
     @Override
     public List<CharacteristicDto> findAllCharacteristics() {
-        var entities = characteristicRepository.findAll();
+        var characteristics = characteristicRepository.findAll();
 
-        log.info("method findAll - characteristic found  = {} ", entities.size());
-        return characteristicMapper.mapListDtoFromListEntity(entities);
+        log.info("method findAll - characteristic found  = {} ", characteristics.size());
+        return characteristicMapper.mapListDtoFromListEntity(characteristics);
     }
 
     @Override
     @Transactional
     public CharacteristicDto updateCharacteristicsById(Long id, CharacteristicDto dto) {
-        var entity = characteristicMapper.mapEntityFromDto(dto);
-        entity.setId(id);
-        var updatedEntity = characteristicRepository.save(entity);
+        var characteristic = characteristicMapper.mapEntityFromDto(dto);
+        characteristic.setId(id);
+        var updatedEntity = characteristicRepository.save(characteristic);
 
         log.info("method update - characteristic with id = {} updated", updatedEntity.getId());
         return characteristicMapper.mapDtoFromEntity(updatedEntity);
@@ -70,7 +69,6 @@ public class CharacteristicServiceImpl implements CharacteristicService {
         log.info("method deleteById - characteristic with id = {} deleted", id);
     }
 
-    @Override
     public CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id) {
         return characteristicRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("Characteristic with id = " + id + "not found"));

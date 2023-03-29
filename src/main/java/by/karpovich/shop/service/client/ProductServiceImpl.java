@@ -24,11 +24,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDtoOut saveProduct(ProductDtoForSave dto) {
-        var entity = productMapper.mapEntityFromDto(dto);
-        var savedEntity = productRepository.save(entity);
+    public ProductDtoOut saveProduct(ProductDtoForSave productDto) {
+        ProductEntity product = productMapper.mapEntityFromDto(productDto);
+        ProductEntity savedProduct = productRepository.save(product);
 
-        return productMapper.mapDtoOutFromEntity(savedEntity);
+        return productMapper.mapDtoOutFromEntity(savedProduct);
     }
 
     //Отображаем только валидные продукты
@@ -38,10 +38,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void updateProductById(Long id, ProductDtoForSave dto) {
-        ProductEntity entity = productMapper.mapEntityFromDto(dto);
-        entity.setId(id);
-        productRepository.save(entity);
+    public void updateProductById(Long productId, ProductDtoForSave dto) {
+        ProductEntity product = productMapper.mapEntityFromDto(dto);
+        product.setId(productId);
+        productRepository.save(product);
     }
 
     @Override
@@ -60,6 +60,6 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductEntity findProductByIdWhichWillReturnModel(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new NotFoundModelException("Product with id = " + id + "not found"));
+                () -> new NotFoundModelException(String.format("Product with id = %s not found", id)));
     }
 }

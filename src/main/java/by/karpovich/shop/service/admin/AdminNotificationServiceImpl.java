@@ -20,5 +20,6 @@ public class AdminNotificationServiceImpl implements AdminNotificationService {
     @Transactional
     public void sendNotificationsToUsers(NotificationDtoForSend notificationsDto) {
         notificationRepository.save(notificationMapper.mapEntityFromDto(notificationsDto));
+        log.info("method sendNotificationsToUsers - Notification has been sent to {} products", notificationsDto.getUsersId().size());
     }
 }

@@ -23,5 +23,6 @@ public class AdminOrganizationServiceImpl implements AdminOrganizationService {
         } else {
             throw new NotFoundModelException(String.format("Organization with id = %s not found", organizationId));
         }
+        log.info("method setOrganizationStatus - Organization with id = {} is now valid", organizationId);
     }
 }

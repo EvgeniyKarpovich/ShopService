@@ -8,5 +8,5 @@ public interface AdminShopService {
 
     void deleteShopById(Long shopId);
 
-    ShopEntity findShopById(Long id);
+    ShopEntity findShopById(Long shopId);
 }

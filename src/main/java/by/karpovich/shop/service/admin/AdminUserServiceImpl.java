@@ -34,6 +34,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         } else {
             userRepository.addBalance(userId, sum);
         }
+        log.info("method addBalance - balance has been added ");
     }
 
     @Override
@@ -44,22 +45,23 @@ public class AdminUserServiceImpl implements AdminUserService {
         } else {
             throw new NotFoundModelException(String.format("User with id = %s not found", userId));
         }
+        log.info("method setUserStatus - status has been updated");
     }
 
     @Override
     public List<UserDtoForFindAll> findAllUsers() {
-        List<UserEntity> usersModel = userRepository.findAll();
+        List<UserEntity> users = userRepository.findAll();
 
-        log.info("method findAll - number of users found  = {} ", usersModel.size());
-        return userMapper.mapListUserDtoForFindAllFromListModel(usersModel);
+        log.info("method findAllUsers - number of users found  = {} ", users.size());
+        return userMapper.mapListUserDtoForFindAllFromListModel(users);
     }
 
     @Override
     public UserFullDtoOut findUserById(Long id) {
-        var entity = userRepository.findById(id).orElseThrow(
+        UserEntity user = userRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
 
-        log.info("method findById - the user found with id = {} ", entity.getId());
-        return userMapper.mapUserFullDtoFromModel(entity);
+        log.info("method findUserById - the user found with id = {} ", user.getId());
+        return userMapper.mapUserFullDtoFromModel(user);
     }
 }

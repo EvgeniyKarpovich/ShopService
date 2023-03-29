@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping
     public UserFullDtoOut findById(@RequestHeader(value = "Authorization") String authorization) {
-        return userService.findUserById(authorization);
+        return userService.findUserByIdFromToken(authorization);
     }
 
     @PutMapping("/{id}")

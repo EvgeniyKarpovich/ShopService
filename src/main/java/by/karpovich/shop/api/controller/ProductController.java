@@ -6,7 +6,6 @@ import by.karpovich.shop.api.dto.product.ProductDtoForSave;
 import by.karpovich.shop.api.dto.product.ProductDtoOut;
 import by.karpovich.shop.service.client.CommentServiceImpl;
 import by.karpovich.shop.service.client.ProductServiceImpl;
-import by.karpovich.shop.service.client.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,6 @@ public class ProductController {
 
     private final CommentServiceImpl commentService;
     private final ProductServiceImpl productService;
-    private final UserServiceImpl userService;
 
     @PostMapping
     public void save(@Valid @RequestBody ProductDtoForSave dto) {

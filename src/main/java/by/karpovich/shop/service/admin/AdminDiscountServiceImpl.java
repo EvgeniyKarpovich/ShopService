@@ -29,10 +29,10 @@ public class AdminDiscountServiceImpl implements AdminDiscountService {
     @Override
     @Transactional
     public void saveDiscount(DiscountDto dto) {
-        var entity = discountMapper.mapEntityFromDto(dto);
+        DiscountEntity discount = discountMapper.mapEntityFromDto(dto);
 
-        log.info("method save - Discount with name {} saved", entity.getName());
-        discountRepository.save(entity);
+        log.info("method saveDiscount - Discount with name {} saved", discount.getName());
+        discountRepository.save(discount);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class AdminDiscountServiceImpl implements AdminDiscountService {
             product.setDiscount(discount);
             productRepository.save(product);
         }
+        log.info("method addDiscount - Discount has been added to {} products", productsId.size());
     }
 
     @Override
@@ -58,23 +59,23 @@ public class AdminDiscountServiceImpl implements AdminDiscountService {
                 product.setDiscount(null);
             }
         }
+        log.info("method deleteDiscountFromProducts - Discount has been deleted to {} products", productsId.size());
     }
 
     @Override
     public DiscountDtoOut findDiscountById(Long id) {
-        var entity = discountRepository.findById(id).orElseThrow(
-                () -> new NotFoundModelException("not found"));
+        DiscountEntity discount = findDiscountByIdWhichWillReturnModel(id);
 
-        log.info("method findById - Discount found with id = {} ", entity.getId());
-        return discountMapper.mapDtoFromEntity(entity);
+        log.info("method findDiscountById - Discount found with id = {} ", discount.getId());
+        return discountMapper.mapDtoFromEntity(discount);
     }
 
     @Override
     public List<DiscountDtoOut> findAllDiscounts() {
-        var entities = discountRepository.findAll();
+        List<DiscountEntity> discounts = discountRepository.findAll();
 
-        log.info("method findAll - Discounts found  = {} ", entities.size());
-        return discountMapper.mapListDtoOutFromListEntities(entities);
+        log.info("method findAll - Discounts found  = {} ", discounts.size());
+        return discountMapper.mapListDtoOutFromListEntities(discounts);
     }
 
     @Override
@@ -85,20 +86,20 @@ public class AdminDiscountServiceImpl implements AdminDiscountService {
         } else {
             discountRepository.deleteById(id);
         }
+        log.info("method deleteDiscountById - Discounts with id = {} deleted", id);
     }
 
     @Override
     @Transactional
     public DiscountDtoOut updateDiscountById(DiscountDto dto, Long id) {
-        var entity = discountMapper.mapEntityFromDto(dto);
-        entity.setId(id);
-        var updatedEntity = discountRepository.save(entity);
+        DiscountEntity discount = discountMapper.mapEntityFromDto(dto);
+        discount.setId(id);
+        var updatedEntity = discountRepository.save(discount);
 
-        log.info("method update - Discount {} updated", updatedEntity.getName());
+        log.info("method updateDiscountById - Discount {} updated", updatedEntity.getName());
         return discountMapper.mapDtoFromEntity(updatedEntity);
     }
 
-    @Override
     public DiscountEntity findDiscountByIdWhichWillReturnModel(Long id) {
         return discountRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("Discount with id = " + id + "not found"));

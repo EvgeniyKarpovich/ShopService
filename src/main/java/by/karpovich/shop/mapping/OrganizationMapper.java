@@ -72,7 +72,7 @@ public class OrganizationMapper {
             return null;
         }
 
-        List<OrganizationDtoForFindAll> dtos = new ArrayList<>();
+        List<OrganizationDtoForFindAll> organizations = new ArrayList<>();
 
         for (OrganizationEntity entity : entities) {
             OrganizationDtoForFindAll dto = new OrganizationDtoForFindAll();
@@ -80,10 +80,10 @@ public class OrganizationMapper {
             dto.setDescription(entity.getDescription());
             dto.setDateCreation(Utils.mapStringFromInstant(entity.getDateOfCreation()));
 
-            dtos.add(dto);
+            organizations.add(dto);
         }
 
-        return dtos;
+        return organizations;
     }
 
     public UserEntity findUserByIdWhichWillReturnModel(Long id) {

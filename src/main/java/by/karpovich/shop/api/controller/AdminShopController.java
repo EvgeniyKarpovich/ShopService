@@ -21,5 +21,4 @@ public class AdminShopController {
     public void deleteById(@PathVariable("id") Long id) {
         shopService.deleteShopById(id);
     }
-
 }

@@ -1,7 +1,6 @@
 package by.karpovich.shop.service.client;
 
 import by.karpovich.shop.api.dto.characteristic.CharacteristicDto;
-import by.karpovich.shop.jpa.entity.CharacteristicEntity;
 
 import java.util.List;
 
@@ -16,6 +15,4 @@ public interface CharacteristicService {
     CharacteristicDto updateCharacteristicsById(Long id, CharacteristicDto dto);
 
     void deleteCharacteristicById(Long id);
-
-    CharacteristicEntity findCharacterByIdWhichWillReturnModel(Long id);
 }

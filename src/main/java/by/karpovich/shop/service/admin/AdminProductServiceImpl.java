@@ -22,5 +22,6 @@ public class AdminProductServiceImpl implements AdminProductService {
         } else {
             throw new NotFoundModelException(String.format("Product with id = %s not found", productId));
         }
+        log.info("method setOrganizationStatus - Product with id = {} is now valid", productId);
     }
 }

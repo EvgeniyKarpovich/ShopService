@@ -7,7 +7,6 @@ import by.karpovich.shop.api.dto.notification.NotificationDto;
 import by.karpovich.shop.api.dto.product.ProductDtoForFindAll;
 import by.karpovich.shop.api.dto.user.UserForUpdate;
 import by.karpovich.shop.api.dto.user.UserFullDtoOut;
-import by.karpovich.shop.jpa.entity.UserEntity;
 
 import java.util.List;
 
@@ -15,23 +14,19 @@ public interface UserService {
 
     List<NotificationDto> findAllUserNotifications(String token);
 
-    UserEntity findUserByIdWhichWillReturnModel(Long userId);
-
     void signUp(RegistrationForm registrationForm);
 
     JwtResponse signIn(LoginForm loginForm);
-
-    UserEntity findUserByName(String userName);
 
     UserFullDtoOut updateUserById(String token, UserForUpdate dto);
 
     void deleteUserById(String token);
 
-    List<ProductDtoForFindAll> findUserProducts(String authorization);
+    List<ProductDtoForFindAll> findUserProducts(String token);
 
-    void buyProduct(String authorization, Long productId);
+    void buyProduct(String token, Long productId);
 
-    void returnProduct(String authorization, Long productId);
+    void returnProduct(String token, Long productId);
 
-    UserFullDtoOut findUserById(String token);
+    UserFullDtoOut findUserByIdFromToken(String token);
 }

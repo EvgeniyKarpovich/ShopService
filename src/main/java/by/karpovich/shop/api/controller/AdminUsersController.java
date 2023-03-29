@@ -2,6 +2,7 @@ package by.karpovich.shop.api.controller;
 
 import by.karpovich.shop.api.dto.notification.NotificationDtoForSend;
 import by.karpovich.shop.api.dto.user.UserDtoForFindAll;
+import by.karpovich.shop.api.dto.user.UserFullDtoOut;
 import by.karpovich.shop.jpa.entity.StatusUser;
 import by.karpovich.shop.service.admin.AdminNotificationServiceImpl;
 import by.karpovich.shop.service.admin.AdminUserServiceImpl;
@@ -48,5 +49,10 @@ public class AdminUsersController {
     @GetMapping
     public List<UserDtoForFindAll> findAll() {
         return adminUserService.findAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public UserFullDtoOut findUserById(@PathVariable("id") Long userId) {
+        return adminUserService.findUserById(userId);
     }
 }

@@ -4,8 +4,10 @@ import by.karpovich.shop.api.dto.organization.OrganizationDtoForFindAll;
 import by.karpovich.shop.api.dto.organization.OrganizationDtoOut;
 import by.karpovich.shop.api.dto.organization.OrganizationForSaveUpdateDto;
 import by.karpovich.shop.exception.DuplicateException;
+import by.karpovich.shop.exception.IncorrectUser;
 import by.karpovich.shop.exception.NotFoundModelException;
 import by.karpovich.shop.jpa.entity.OrganizationEntity;
+import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.OrganizationRepository;
 import by.karpovich.shop.mapping.OrganizationMapper;
 import by.karpovich.shop.utils.Utils;
@@ -30,65 +32,83 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     @Transactional
     public void saveOrganization(OrganizationForSaveUpdateDto dto, String authorization) {
-        var userIdFromToken = userService.getUserIdFromToken(authorization);
+        Long userIdFromToken = userService.getUserIdFromToken(authorization);
 
         checkOrganizationForDuplicate(dto, null);
-        var organization = organizationMapper.mapEntityFromDto(dto, userIdFromToken);
+        OrganizationEntity organization = organizationMapper.mapEntityFromDto(dto, userIdFromToken);
 
         log.info("method save - Organization with name {} saved", organization.getName());
         organizationRepository.save(organization);
     }
 
     @Override
-    public OrganizationDtoOut findOrganizationById(Long id) {
-        var entity = organizationRepository.findById(id).orElseThrow(
-                () -> new NotFoundModelException("not found"));
+    public OrganizationDtoOut findOrganizationById(Long organizationId) {
+        OrganizationEntity organization = organizationRepository.findById(organizationId).orElseThrow(
+                () -> new NotFoundModelException(String.format("Organization with id = %s not found", organizationId)));
 
-        log.info("method findById - Organization found with id = {} ", entity.getId());
-        return organizationMapper.mapDtoOutFromEntity(entity);
+        log.info("method findById - Organization found with id = {} ", organization.getId());
+        return organizationMapper.mapDtoOutFromEntity(organization);
     }
 
     @Override
     public List<OrganizationDtoForFindAll> findAllOrganizations() {
-        var organizationEntities = organizationRepository.findAll();
+        List<OrganizationEntity> organizations = organizationRepository.findAll();
 
-        log.info("method findAll - organizations found  = {} ", organizationEntities.size());
-        return organizationMapper.mapListDtoForFindAllFromListEntity(organizationEntities);
+        log.info("method findAll - organizations found  = {} ", organizations.size());
+        return organizationMapper.mapListDtoForFindAllFromListEntity(organizations);
     }
 
     @Override
     @Transactional
-    public OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto dto, Long id) {
-        checkOrganizationForDuplicate(dto, id);
+    public OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto orgDto, Long orgId, String token) {
+        checkOrganizationForDuplicate(orgDto, orgId);
+        UserEntity user = userService.findUserEntityByIdFromToken(token);
+        OrganizationEntity organizationUpdated;
 
-        var entity = organizationMapper.mapEntityFromDtoForUpdate(dto);
-        entity.setId(id);
-        var updatedEntity = organizationRepository.save(entity);
+        if (user.getOrganizations().stream()
+                .anyMatch(org -> org.getId().equals(orgId))) {
 
-        log.info("method update - organization {} updated", updatedEntity.getName());
-        return organizationMapper.mapDtoOutFromEntity(updatedEntity);
-    }
-
-    @Override
-    @Transactional
-    public void deleteOrganizationById(Long id) {
-        if (organizationRepository.findById(id).isPresent()) {
-            organizationRepository.deleteById(id);
+            OrganizationEntity organizationEntity = organizationMapper.mapEntityFromDtoForUpdate(orgDto);
+            organizationEntity.setId(orgId);
+            organizationUpdated = organizationRepository.save(organizationEntity);
         } else {
-            throw new NotFoundModelException(String.format("organization with id = %s not found", id));
+            throw new IncorrectUser("You can't update this organization");
         }
-        log.info("method deleteById - organization with id = {} deleted", id);
+        log.info("method update - organization {} updated", organizationUpdated.getName());
+        return organizationMapper.mapDtoOutFromEntity(organizationUpdated);
     }
 
     @Override
     @Transactional
-    public void addLogoForOrganization(Long organizationId, MultipartFile file) {
-        var entity = organizationRepository.findById(organizationId)
-                .orElseThrow(
-                        () -> new NotFoundModelException("not found"));
+    public void deleteOrganizationById(Long organizationId, String token) {
+        UserEntity user = userService.findUserEntityByIdFromToken(token);
+        if (user.getOrganizations().stream()
+                .anyMatch(org -> org.getId().equals(organizationId))) {
+            throw new IncorrectUser("You can't delete this organization");
+        }
+        if (organizationRepository.findById(organizationId).isPresent()) {
+            organizationRepository.deleteById(organizationId);
+        } else {
+            throw new NotFoundModelException(String.format("organization with id = %s not found", organizationId));
+        }
+        log.info("method deleteById - organization with id = {} deleted", organizationId);
+    }
 
-        entity.setLogo(Utils.saveFile(file));
-        organizationRepository.save(entity);
+    @Override
+    @Transactional
+    public void addLogoForOrganization(Long organizationId, MultipartFile file, String token) {
+        UserEntity user = userService.findUserEntityByIdFromToken(token);
+        if (user.getOrganizations().stream()
+                .anyMatch(org -> org.getId().equals(organizationId))) {
+            throw new IncorrectUser("You can't set logo this organization");
+        }
+
+        OrganizationEntity organization = organizationRepository.findById(organizationId)
+                .orElseThrow(
+                        () -> new NotFoundModelException(String.format("Organization with id = %s not found", organizationId)));
+
+        organization.setLogo(Utils.saveFile(file));
+        organizationRepository.save(organization);
     }
 
     private void checkOrganizationForDuplicate(OrganizationForSaveUpdateDto dto, Long id) {

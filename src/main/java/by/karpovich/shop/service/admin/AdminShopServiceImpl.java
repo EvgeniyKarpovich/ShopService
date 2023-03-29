@@ -27,12 +27,17 @@ public class AdminShopServiceImpl implements AdminShopService {
     @Override
     @Transactional
     public void deleteShopById(Long shopId) {
-        shopRepository.deleteById(shopId);
+        if (shopRepository.findById(shopId).isPresent()) {
+            shopRepository.deleteById(shopId);
+        } else {
+            throw new NotFoundModelException(String.format("Role with id = %s not found", shopId));
+        }
+        log.info("method deleteRoleById - Role with id = {} deleted", shopId);
     }
 
     @Override
     public ShopEntity findShopById(Long id) {
         return shopRepository.findById(id).orElseThrow(
-                () -> new NotFoundModelException("Shop not found"));
+                () -> new NotFoundModelException(String.format("Shop with id = %s not found", id)));
     }
 }

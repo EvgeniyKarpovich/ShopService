@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserFullDtoOut findUserById(String token) {
+    public UserFullDtoOut findUserByIdFromToken(String token) {
         Long userIdFromToken = getUserIdFromToken(token);
 
         return userMapper.mapUserFullDtoFromModel(findUserByIdWhichWillReturnModel(userIdFromToken));
@@ -206,7 +206,6 @@ public class UserServiceImpl implements UserService {
         UserEntity updatedUser = userRepository.save(user);
 
         log.info("method update - the user {} updated", updatedUser.getUsername());
-
         return userMapper.mapUserFullDtoFromModel(updatedUser);
     }
 
@@ -218,7 +217,6 @@ public class UserServiceImpl implements UserService {
         return notificationMapper.mapListNotificationDtoFromListEntity(user.getNotifications());
     }
 
-    @Override
     public UserEntity findUserByIdWhichWillReturnModel(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException("User with id = " + id + "not found"));
@@ -232,6 +230,12 @@ public class UserServiceImpl implements UserService {
         );
         log.info("method findByName -  User with username = {} found", entity.getUsername());
         return entity;
+    }
+
+    public UserEntity findUserEntityByIdFromToken(String token) {
+        Long userIdFromToken = getUserIdFromToken(token);
+
+        return findUserByIdWhichWillReturnModel(userIdFromToken);
     }
 
     public Long getUserIdFromToken(String authorization) {

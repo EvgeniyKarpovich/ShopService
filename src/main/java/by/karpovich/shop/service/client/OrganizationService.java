@@ -15,9 +15,9 @@ public interface OrganizationService {
 
     List<OrganizationDtoForFindAll> findAllOrganizations();
 
-    OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto dto, Long id);
+    OrganizationDtoOut updateOrganizationById(OrganizationForSaveUpdateDto dto, Long id, String token);
 
-    void deleteOrganizationById(Long id);
+    void deleteOrganizationById(Long id, String token);
 
-    void addLogoForOrganization(Long organizationId, MultipartFile file);
+    void addLogoForOrganization(Long organizationId, MultipartFile file, String token);
 }

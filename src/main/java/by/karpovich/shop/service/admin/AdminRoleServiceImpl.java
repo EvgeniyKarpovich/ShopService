@@ -29,40 +29,39 @@ public class AdminRoleServiceImpl implements AdminRoleService {
     public RoleEntity saveRole(RoleDto dto) {
         validateAlreadyExists(dto, null);
 
+        log.info("method saveRole - Role with name = {} saved", dto.getName());
         return roleRepository.save(roleMapper.mapEntityFromDto(dto));
     }
 
     @Override
-    public Set<RoleEntity> findRoleByName(String role) {
-        Optional<RoleEntity> entity = roleRepository.findByName(role);
+    public Set<RoleEntity> findRoleByName(String roleName) {
+        Optional<RoleEntity> role = roleRepository.findByName(roleName);
 
-        var roleEntity = entity.orElseThrow(
+        var roleEntity = role.orElseThrow(
                 () -> new NotFoundModelException(String.format("Role with name = %s not found", role)));
 
         Set<RoleEntity> userRoles = new HashSet<>();
         userRoles.add(roleEntity);
 
+        log.info("method findRoleByName - Role with name = {} find", role);
         return userRoles;
     }
 
     @Override
     public RoleDto findRoleById(Long id) {
-        Optional<RoleEntity> model = roleRepository.findById(id);
-        var role = model.orElseThrow(
+        var role = roleRepository.findById(id).orElseThrow(
                 () -> new NotFoundModelException(String.format("Role with id = %s not found", id)));
 
-        log.info("method findById - Role found with id = {} ", role.getId());
-
+        log.info("method findRoleById - Role found with id = {} ", role.getId());
         return roleMapper.mapDtoFromEntity(role);
     }
 
     @Override
     public List<RoleDto> findRolesAll() {
-        List<RoleEntity> entities = roleRepository.findAll();
+        List<RoleEntity> roles = roleRepository.findAll();
 
-        log.info("method findAll - the number of roles found  = {} ", entities.size());
-
-        return roleMapper.mapListDtoFromListEntity(entities);
+        log.info("method findRolesAll - the number of roles found  = {} ", roles.size());
+        return roleMapper.mapListDtoFromListEntity(roles);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class AdminRoleServiceImpl implements AdminRoleService {
         entity.setId(id);
         var updated = roleRepository.save(entity);
 
-        log.info("method update - Role {} updated", updated.getName());
+        log.info("method updateRoleById - Role {} updated", updated.getName());
         return roleMapper.mapDtoFromEntity(updated);
     }
 
@@ -84,13 +83,13 @@ public class AdminRoleServiceImpl implements AdminRoleService {
         } else {
             throw new NotFoundModelException(String.format("Role with id = %s not found", id));
         }
-        log.info("method deleteById - Role with id = {} deleted", id);
+        log.info("method deleteRoleById - Role with id = {} deleted", id);
     }
 
     private void validateAlreadyExists(RoleDto dto, Long id) {
-        Optional<RoleEntity> entity = roleRepository.findByName(dto.getName());
+        Optional<RoleEntity> role = roleRepository.findByName(dto.getName());
 
-        if (entity.isPresent() && !entity.get().getId().equals(id)) {
+        if (role.isPresent() && !role.get().getId().equals(id)) {
             throw new DuplicateException(String.format("Role with name = %s already exist", dto.getName()));
         }
     }

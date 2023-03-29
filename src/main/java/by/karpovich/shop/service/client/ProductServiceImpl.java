@@ -46,11 +46,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProductById(Long id) {
-        if (productRepository.findById(id).isPresent()) {
-            throw new NotFoundModelException(String.format("Product with id = %s not found", id));
+    public void deleteProductById(Long productId) {
+        if (productRepository.findById(productId).isEmpty()) {
+            throw new NotFoundModelException(String.format("Product with id = %s not found", productId));
         }
-        productRepository.deleteById(id);
+        productRepository.deleteById(productId);
     }
 
     @Override

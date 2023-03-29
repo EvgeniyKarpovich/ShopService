@@ -9,6 +9,7 @@ import by.karpovich.shop.jpa.entity.CommentEntity;
 import by.karpovich.shop.jpa.entity.ProductEntity;
 import by.karpovich.shop.jpa.entity.UserEntity;
 import by.karpovich.shop.jpa.repository.CommentRepository;
+import by.karpovich.shop.jpa.repository.ProductRepository;
 import by.karpovich.shop.mapping.CommentMapper;
 import by.karpovich.shop.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserServiceImpl userService;
     private final JwtUtils jwtUtils;
     private final ProductServiceImpl productService;
+    private final ProductRepository productRepository;
 
     @Override
     @Transactional
@@ -57,10 +59,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDtoOut> findAllProductCommentsByUserId(Long productId) {
-        return commentMapper.mapListDtoFromListEntity(commentRepository.findByProductId(productId));
+        if (productRepository.findById(productId).isEmpty()) {
+            throw new NotFoundModelException(String.format("Product with id = %s not found", productId));
+        } else {
+            return commentMapper.mapListDtoFromListEntity(commentRepository.findByProductId(productId));
+        }
     }
 
     @Override
+    @Transactional
     public void updateComment(String token, CommentForSaveDto dto, Long commentId) {
         Long userIdFromToken = userService.getUserIdFromToken(token);
         if (userService.findUserByIdWhichWillReturnModel(userIdFromToken).getComments().stream()
@@ -74,6 +81,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteUserComment(String token, Long commentId) {
         Long userIdFromToken = userService.getUserIdFromToken(token);
         if (userService.findUserByIdWhichWillReturnModel(userIdFromToken).getComments().stream()
@@ -85,6 +93,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteAdminComment(Long id) {
         if (commentRepository.findById(id).isEmpty()) {
             throw new NotFoundModelException("Comment not found");

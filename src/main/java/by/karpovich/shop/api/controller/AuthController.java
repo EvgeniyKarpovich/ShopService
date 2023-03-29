@@ -32,7 +32,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationForm signUpRequest) {
         userService.signUp(signUpRequest);
 
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
+        return new ResponseEntity<>(String.format("%s registered successfully!", signUpRequest.getUsername()), HttpStatus.CREATED);
     }
 
     @PostMapping("/logout")

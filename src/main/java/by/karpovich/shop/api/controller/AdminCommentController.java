@@ -17,9 +17,9 @@ public class AdminCommentController {
     private final CommentServiceImpl commentService;
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAdminCommentById(@PathVariable("id") Long id) {
-        commentService.deleteAdminComment(id);
+    public ResponseEntity<?> deleteAdminCommentById(@PathVariable("id") Long commentId) {
+        commentService.deleteAdminComment(commentId);
 
-        return new ResponseEntity<>("Comment successfully deleted", HttpStatus.OK);
+        return new ResponseEntity<>(String.format("Comment with id = %s successfully deleted", commentId), HttpStatus.OK);
     }
 }

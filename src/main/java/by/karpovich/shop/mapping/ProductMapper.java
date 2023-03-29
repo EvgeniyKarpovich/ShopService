@@ -79,14 +79,14 @@ public class ProductMapper {
     }
 
     public String getSumRatingFromProductComments(ProductEntity entity) {
-        if (entity.getComments().isEmpty()) {
-            return "No ratings";
-        } else {
+        if (entity.getComments() != null && entity.getComments().size() > 0) {
             Integer sum = entity.getComments().stream()
                     .map(CommentEntity::getRating)
                     .reduce(0, Integer::sum);
 
             return String.valueOf(sum / entity.getComments().size());
+        } else {
+            return "No ratings";
         }
     }
 

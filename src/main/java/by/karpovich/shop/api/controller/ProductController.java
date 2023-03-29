@@ -23,7 +23,7 @@ public class ProductController {
     private final ProductServiceImpl productService;
 
     @PostMapping
-    public void save(@Valid @RequestBody ProductDtoForSave dto) {
+    public void saveProduct(@Valid @RequestBody ProductDtoForSave dto) {
         productService.saveProduct(dto);
     }
 
